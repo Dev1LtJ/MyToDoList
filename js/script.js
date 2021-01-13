@@ -18,7 +18,7 @@ let body = document.body,
     toggle.append(toggle__descr);
     settings.append(toggle);
 
-    toggle__img.addEventListener('click', (event) => {
+    toggle__btn.addEventListener('click', (event) => {
         event.stopPropagation();
         body.classList.toggle('darktheme');
         if (body.classList.contains('darktheme')) {
