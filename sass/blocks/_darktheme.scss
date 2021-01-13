@@ -1,0 +1,94 @@
+.toggle {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    &__btn {
+        position: relative;
+        background-color: rgb(245, 245, 245);
+        width: 40px;
+        height: 20px;
+        border: 1px solid rgb(245, 245, 245);
+        border-radius: 20px;
+    }
+    &__descr {
+        margin-left: 20px;
+        height: 20px;
+        font-size: 14px;
+        line-height: 20px;
+    }
+    &__img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+}
+
+.darktheme {
+    background-color: $dark-color;
+    nav.navbar {
+        background-color: $dark-color !important;
+        color: #fff;
+        border:1px solid $theme-color;
+        border-radius: 20px;
+        button {
+            background-color: $theme-color;
+            border-color: $theme-color;
+        }
+    }
+    ul.list-group {
+        li {
+            background-color: $dark-color;
+            border-color: $theme-color;
+            border-radius: 20px;
+            color: #fff;
+        }
+        button.btn-secondary {
+            background-color: $theme-color;
+            border-color: $theme-color;
+        }
+    }
+    h3.my-2 {
+        color: #fff;
+    }
+    hr {
+        border-top: 1px solid $theme-color;
+    }
+    .dropdown-menu {
+        background-color: $dark-color;
+        border-color: $theme-color;
+        .toggle__btn {
+            border-color: $highlight-color;
+            background-color: $highlight-color;
+        }
+        .toggle__descr {
+            color: #fff;
+        }
+    }
+    .modal {
+        &-content {
+            background-color: $dark-color;
+            color: #fff;
+        }
+        &-header {
+            border-bottom: 1px solid $theme-color;
+        }
+        button.btn-primary {
+                background-color: $theme-color;
+                border-color: $theme-color;
+        }
+        button.btn-secondary {
+                border-color: $highlight-color;
+                background-color: $highlight-color;
+        }
+        button.close {
+            color: #fff;
+        }
+        input {
+            box-shadow: $theme-color;
+        }   
+    }
+}
