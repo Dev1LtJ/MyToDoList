@@ -60,11 +60,16 @@ let addTaskBtn = document.querySelector('button[type="submit"]'),
     taskList = document.getElementById('currentTasks'),
     taskElem = document.querySelector('.list-group-item'),
     closeBtn = document.querySelector('.close'),
+    dropdownMenu = document.querySelector('.dropdown-menu'),
+    editBtn = document.querySelector('.btn-info'),
+    deleteBtn = document.querySelector('.btn-danger'),
+    completeBtn = document.querySelector('.btn-success'),
     titleForm = document.getElementById('inputTitle'),
     textForm = document.getElementById('inputText'),
     radios = document.querySelectorAll('.form-check-input'),
-    tasks = [];
-    taskElem.remove();
+    tasks = [],
+    completedTasks = [];
+    //taskElem.remove();
 
 class Task {
     constructor(name, priority) {
@@ -78,10 +83,12 @@ class Task {
     editable = 'true';
 }
 
+//create task
 addTaskBtn.addEventListener('click', (event) => {
     event.preventDefault();
     tasks.push(new Task(String(tasks.length)));
     closeBtn.dispatchEvent(new Event ('click', {bubbles : true}));
+    clearPreviousDom();
     renderDom();
 });
 
@@ -94,11 +101,45 @@ function checkPriority (radios) {
 function renderDom() {
     tasks.forEach((item) => {
         let taskElemCopy = taskElem.cloneNode(true);
+        taskElemCopy.setAttribute('id', item.name);
         taskElemCopy.querySelector('.title').textContent = item.title;
         taskElemCopy.querySelector('.text').textContent = item.text;
-        taskElemCopy.querySelector('.time').textContent = item.time;
+        taskElemCopy.querySelector('.time').textContent = getTime(item.time);
         taskElemCopy.querySelector('.priority').textContent = item.priority + ' priority';
         taskList.append(taskElemCopy);
     });
 }
-//replaceWith
+
+function getTime(timeStamp) {
+    let hours = timeStamp.getHours(),
+        date = timeStamp.getDate(),
+        month = timeStamp.getMonth() + 1,
+        year = timeStamp.getFullYear(),
+        minutes = timeStamp.getMinutes();
+
+    (month > 0 && month < 10) ? month = '0' + month : month = month;
+    (minutes > 0 && minutes < 10) ? minutes = '0' + minutes : minutes = minutes;
+
+    return `${hours}:${minutes} ${date}.${month}.${year}`;
+}
+
+function clearPreviousDom() {
+    while (taskList.firstChild) {
+        taskList.firstChild.remove();
+    }
+}
+
+//complete task
+completeBtn.addEventListener('click', (event) => {
+    console.log(event.target);
+});
+
+//edit task
+editBtn.addEventListener('click', (event) => {
+    console.log(event.target);
+});
+
+//delete task
+deleteBtn.addEventListener('click', (event) => {
+    console.log(event.target);
+});
