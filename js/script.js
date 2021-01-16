@@ -61,9 +61,6 @@ let addTaskBtn = document.querySelector('button[type="submit"]'),
     taskElem = document.querySelector('.list-group-item'),
     closeBtn = document.querySelector('.close'),
     dropdownMenu = document.querySelector('.dropdown-menu'),
-    editBtn = document.querySelector('.btn-info'),
-    deleteBtn = document.querySelector('.btn-danger'),
-    completeBtn = document.querySelector('.btn-success'),
     titleForm = document.getElementById('inputTitle'),
     textForm = document.getElementById('inputText'),
     radios = document.querySelectorAll('.form-check-input'),
@@ -88,7 +85,6 @@ addTaskBtn.addEventListener('click', (event) => {
     event.preventDefault();
     tasks.push(new Task(String(tasks.length)));
     closeBtn.dispatchEvent(new Event ('click', {bubbles : true}));
-    clearPreviousDom();
     renderDom();
 });
 
@@ -99,6 +95,7 @@ function checkPriority (radios) {
 }
 
 function renderDom() {
+    clearPreviousDom();
     tasks.forEach((item) => {
         let taskElemCopy = taskElem.cloneNode(true);
         taskElemCopy.setAttribute('id', item.name);
@@ -129,17 +126,30 @@ function clearPreviousDom() {
     }
 }
 
-//complete task
-completeBtn.addEventListener('click', (event) => {
-    console.log(event.target);
+//delete, complete, edit task event delegation
+taskList.addEventListener('click', (event) => {
+    if (event.target.classList.contains('btn-success')) {
+        let taskName = event.target.closest('.list-group-item').id;
+        completeTask(taskName);
+        renderDom();
+    } else if (event.target.classList.contains('btn-info')) {
+        console.log('lol');
+    } else if (event.target.classList.contains('btn-danger')) {
+        console.log('arbidol');
+    }
 });
 
-//edit task
-editBtn.addEventListener('click', (event) => {
-    console.log(event.target);
-});
-
-//delete task
-deleteBtn.addEventListener('click', (event) => {
-    console.log(event.target);
-});
+// function completeTask (taskName) {
+//     console.log(taskName, tasks.length);
+//     if (taskName === (tasks.length - 1)) {
+//         console.log('kek');
+//         let completedTask = tasks.splice(taskName, tasks.length - taskName)[0];
+//         completedTasks.push(completedTask);
+//     } else {
+//         let returnableTasks = tasks.slice(tasks.length - taskName);
+//         let completedTask = tasks.splice(taskName, tasks.length - taskName)[0]; 
+//         completedTasks.push(completedTask);
+//         returnableTasks.forEach((item) => tasks.push(item));
+//     }
+    
+// }
