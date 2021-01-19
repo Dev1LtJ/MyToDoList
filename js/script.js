@@ -58,6 +58,7 @@ function moveToggle(value) {
 //create tasks
 let addTaskBtn = document.querySelector('button[type="submit"]'),
     taskList = document.getElementById('currentTasks'),
+    completedTaskList = document.getElementById('completedTasks'),
     taskElem = document.querySelector('.list-group-item'),
     closeBtn = document.querySelector('.close'),
     dropdownMenu = document.querySelector('.dropdown-menu'),
@@ -74,10 +75,15 @@ class Task {
     }
     title = titleForm.value;
     text = textForm.value;
-    priority = checkPriority(radios);
+    priority = this.checkPriority(radios);
     time = new Date();
     status = 'inProgress';
     editable = 'true';
+    checkPriority(radios) {
+        for (let radio of radios) {
+            if (radio.checked === true) return radio.value;
+        }
+    };
 }
 
 //create task
@@ -88,11 +94,9 @@ addTaskBtn.addEventListener('click', (event) => {
     renderDom();
 });
 
-function checkPriority (radios) {
-    for (let radio of radios) {
-        if (radio.checked === true) return radio.value;
-    }
-}
+// function checkPriority (radios) {
+    
+// }
 
 function renderDom() {
     clearPreviousDom();
@@ -139,17 +143,41 @@ taskList.addEventListener('click', (event) => {
     }
 });
 
-// function completeTask (taskName) {
-//     console.log(taskName, tasks.length);
-//     if (taskName === (tasks.length - 1)) {
-//         console.log('kek');
-//         let completedTask = tasks.splice(taskName, tasks.length - taskName)[0];
-//         completedTasks.push(completedTask);
-//     } else {
-//         let returnableTasks = tasks.slice(tasks.length - taskName);
-//         let completedTask = tasks.splice(taskName, tasks.length - taskName)[0]; 
-//         completedTasks.push(completedTask);
-//         returnableTasks.forEach((item) => tasks.push(item));
-//     }
-    
-// }
+function completeTask (taskName) {
+    let taskPosition  = tasks.findIndex((item) => item.name == taskName);
+    console.log(taskName, taskPosition, tasks.length);
+    if (taskPosition == (tasks.length - 1)) {
+        console.log('kek');
+        let completedTask = tasks.splice(taskPosition, tasks.length - taskPosition)[0];
+        completedTasks.push(completedTask);
+        renderCompletedDom();
+    } else {
+        console.log(taskPosition + 1);
+        let returnableTasks = tasks.slice(taskPosition + 1);
+        console.log(returnableTasks);
+        let completedTask = tasks.splice(taskPosition, tasks.length - taskPosition)[0]; 
+        completedTasks.push(completedTask);
+        returnableTasks.forEach((item) => tasks.push(item));
+        returnableTasks.length = 0;
+        renderCompletedDom();
+    }
+}
+
+function clearPreviousCompletedDom() {
+    while (completedTaskList.firstChild) {
+        completedTaskList.firstChild.remove();
+    }
+}
+
+function renderCompletedDom() {
+    clearPreviousCompletedDom();
+    completedTasks.forEach((item) => {
+        let taskElemCopy = taskElem.cloneNode(true);
+        taskElemCopy.setAttribute('id', item.name);
+        taskElemCopy.querySelector('.title').textContent = item.title;
+        taskElemCopy.querySelector('.text').textContent = item.text;
+        taskElemCopy.querySelector('.time').textContent = getTime(item.time);
+        taskElemCopy.querySelector('.priority').textContent = item.priority + ' priority';
+        completedTaskList.append(taskElemCopy);
+    });
+}
