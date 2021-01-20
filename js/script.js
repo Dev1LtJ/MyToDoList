@@ -67,7 +67,6 @@ let addTaskBtn = document.querySelector('button[type="submit"]'),
     radios = document.querySelectorAll('.form-check-input'),
     tasks = [],
     completedTasks = [];
-    //taskElem.remove();
 
 class Task {
     constructor(name, priority) {
@@ -91,24 +90,26 @@ addTaskBtn.addEventListener('click', (event) => {
     event.preventDefault();
     tasks.push(new Task(String(tasks.length)));
     closeBtn.dispatchEvent(new Event ('click', {bubbles : true}));
-    renderDom();
+    renderDom(taskList, tasks);
 });
 
-// function checkPriority (radios) {
-    
-// }
-
-function renderDom() {
-    clearPreviousDom();
-    tasks.forEach((item) => {
+function renderDom(nodeList, tasksArray) {
+    clearPreviousDom(nodeList);
+    tasksArray.forEach((item) => {
         let taskElemCopy = taskElem.cloneNode(true);
         taskElemCopy.setAttribute('id', item.name);
         taskElemCopy.querySelector('.title').textContent = item.title;
         taskElemCopy.querySelector('.text').textContent = item.text;
         taskElemCopy.querySelector('.time').textContent = getTime(item.time);
         taskElemCopy.querySelector('.priority').textContent = item.priority + ' priority';
-        taskList.append(taskElemCopy);
+        nodeList.append(taskElemCopy);
     });
+}
+
+function clearPreviousDom(nodeList) {
+    while (nodeList.firstChild) {
+        nodeList.firstChild.remove();
+    }
 }
 
 function getTime(timeStamp) {
@@ -124,18 +125,13 @@ function getTime(timeStamp) {
     return `${hours}:${minutes} ${date}.${month}.${year}`;
 }
 
-function clearPreviousDom() {
-    while (taskList.firstChild) {
-        taskList.firstChild.remove();
-    }
-}
-
 //delete, complete, edit task event delegation
 taskList.addEventListener('click', (event) => {
     if (event.target.classList.contains('btn-success')) {
         let taskName = event.target.closest('.list-group-item').id;
         completeTask(taskName);
-        renderDom();
+        renderDom(completedTaskList, completedTasks);
+        renderDom(taskList, tasks);
     } else if (event.target.classList.contains('btn-info')) {
         console.log('lol');
     } else if (event.target.classList.contains('btn-danger')) {
@@ -145,39 +141,14 @@ taskList.addEventListener('click', (event) => {
 
 function completeTask (taskName) {
     let taskPosition  = tasks.findIndex((item) => item.name == taskName);
-    console.log(taskName, taskPosition, tasks.length);
     if (taskPosition == (tasks.length - 1)) {
-        console.log('kek');
         let completedTask = tasks.splice(taskPosition, tasks.length - taskPosition)[0];
         completedTasks.push(completedTask);
-        renderCompletedDom();
     } else {
-        console.log(taskPosition + 1);
         let returnableTasks = tasks.slice(taskPosition + 1);
-        console.log(returnableTasks);
         let completedTask = tasks.splice(taskPosition, tasks.length - taskPosition)[0]; 
         completedTasks.push(completedTask);
         returnableTasks.forEach((item) => tasks.push(item));
         returnableTasks.length = 0;
-        renderCompletedDom();
     }
-}
-
-function clearPreviousCompletedDom() {
-    while (completedTaskList.firstChild) {
-        completedTaskList.firstChild.remove();
-    }
-}
-
-function renderCompletedDom() {
-    clearPreviousCompletedDom();
-    completedTasks.forEach((item) => {
-        let taskElemCopy = taskElem.cloneNode(true);
-        taskElemCopy.setAttribute('id', item.name);
-        taskElemCopy.querySelector('.title').textContent = item.title;
-        taskElemCopy.querySelector('.text').textContent = item.text;
-        taskElemCopy.querySelector('.time').textContent = getTime(item.time);
-        taskElemCopy.querySelector('.priority').textContent = item.priority + ' priority';
-        completedTaskList.append(taskElemCopy);
-    });
 }
