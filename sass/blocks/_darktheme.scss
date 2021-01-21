@@ -4,10 +4,10 @@
     align-items: center;
     &__btn {
         position: relative;
-        background-color: rgb(245, 245, 245);
+        background-color: $white-color;
         width: 40px;
         height: 20px;
-        border: 1px solid rgb(245, 245, 245);
+        border: 1px solid $white-color;
         border-radius: 20px;
         cursor: pointer;
     }
@@ -31,7 +31,7 @@
     background-color: $dark-color;
     nav.navbar {
         background-color: $dark-color !important;
-        color: #fff;
+        color: $white-color;
         border:1px solid $theme-color;
         border-radius: 20px;
         button {
@@ -53,7 +53,7 @@
             background-color: $dark-color;
             border-color: $theme-color;
             border-radius: 20px;
-            color: #fff;
+            color: $white-color;
         }
         button.btn-secondary {
             background-color: $theme-color;
@@ -61,7 +61,7 @@
         }
     }
     h3.my-2 {
-        color: #fff;
+        color: $white-color;
     }
     hr {
         border-top: 1px solid $theme-color;
@@ -74,13 +74,13 @@
             background-color: $highlight-color;
         }
         .toggle__descr {
-            color: #fff;
+            color: $white-color;
         }
     }
     .modal {
         &-content {
             background-color: $dark-color;
-            color: #fff;
+            color: $white-color;
         }
         &-header {
             border-bottom: 1px solid $theme-color;
@@ -103,7 +103,7 @@
                 background-color: $highlight-color;
         }
         button.close {
-            color: #fff;
+            color: $white-color;
         }
         input[type='text'] {
             &:focus {

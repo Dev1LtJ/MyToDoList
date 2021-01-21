@@ -84,12 +84,13 @@ taskList.addEventListener('click', (event) => {
         completeTask(taskId);
         renderDom(completedTaskList, completedTasks);
         renderDom(taskList, tasks);
+        hideEditDeleteBtns(completedTaskList);
     } else if (event.target.classList.contains('btn-info')) {
         clearForm(); //подумать над ее расположением, почему работает только тут?
         editTask(taskId);
         renderDom(taskList, tasks);
     } else if (event.target.classList.contains('btn-danger')) {
-        deleteTask(taskId);
+        deleteTask(taskId, tasks);
         renderDom(taskList, tasks);
     } else {
         return false;
@@ -111,14 +112,14 @@ function completeTask (taskId) {
     }
 }
 //delete task
-function deleteTask (taskId) {
-    let taskPosition  = tasks.findIndex((item) => item.id == taskId);
-    if (taskPosition == (tasks.length - 1)) {
-        let completedTask = tasks.splice(taskPosition, tasks.length - taskPosition)[0];
+function deleteTask (taskId, tasksArray) {
+    let taskPosition  = tasksArray.findIndex((item) => item.id == taskId);
+    if (taskPosition == (tasksArray.length - 1)) {
+        let completedTask = tasksArray.splice(taskPosition, tasksArray.length - taskPosition)[0];
     } else {
-        let returnableTasks = tasks.slice(taskPosition + 1);
-        let completedTask = tasks.splice(taskPosition, tasks.length - taskPosition)[0]; 
-        returnableTasks.forEach((item) => tasks.push(item));
+        let returnableTasks = tasksArray.slice(taskPosition + 1);
+        let completedTask = tasksArray.splice(taskPosition, tasksArray.length - taskPosition)[0]; 
+        returnableTasks.forEach((item) => tasksArray.push(item));
         returnableTasks.length = 0;
     }
 }
@@ -145,20 +146,18 @@ function editTask(taskId) {
     });
 }
 
-// completedTaskList.addEventListener('click', (event) => {
-//     let taskName = event.target.closest('.list-group-item').id;
-//     if (event.target.classList.contains('btn-success')) {
-//         completeTask(taskName);
-//         renderDom(completedTaskList, completedTasks);
-//         renderDom(taskList, tasks);
-//     } else if (event.target.classList.contains('btn-info')) {
-//         clearForm(); //подумать над ее расположением, почему работает только тут?
-//         editTask(taskName);
-//         renderDom(taskList, tasks);
-//     } else if (event.target.classList.contains('btn-danger')) {
-//         deleteTask(taskName);
-//         renderDom(taskList, tasks);
-//     } else {
-//         return false;
-//     }
-// });
+function hideEditDeleteBtns (nodeList) {
+    nodeList.querySelector('.btn-success').hidden = true;
+    nodeList.querySelector('.btn-info').hidden = true;
+}
+
+//delete task event delegation for completed tasks
+completedTaskList.addEventListener('click', (event) => {
+    let taskId = event.target.closest('.list-group-item').id;
+    if (event.target.classList.contains('btn-danger')) {
+        deleteTask(taskId, completedTasks);
+        renderDom(completedTaskList, completedTasks);
+    } else {
+        return false;
+    }
+});
