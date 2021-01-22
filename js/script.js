@@ -157,6 +157,7 @@ function editTask(taskId) {
         tasks[taskPosition].title = titleForm.value;
         tasks[taskPosition].text = textForm.value;
         tasks[taskPosition].priority = tasks[taskPosition].checkPriority(radios);
+        tasks[taskPosition].color = tasks[taskPosition].getPriorityTheme(tasks[taskPosition].priority);
         submitTaskBtn.hidden = false;
         editTaskBtn.hidden = true;
         closeBtn.dispatchEvent(new Event ('click', {bubbles : true}));
