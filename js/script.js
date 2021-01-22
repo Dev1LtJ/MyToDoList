@@ -10,6 +10,7 @@ let submitTaskBtn = document.querySelector('button[type="submit"]'),
     radios = document.querySelectorAll('.form-check-input'),
     unfinishedHeader = document.querySelector('.unfinished'),
     finishedHeader = document.querySelector('.finished'),
+    sortsBtns = document.querySelector('.sorts'),
     tasks = [],
     completedTasks = [];
 
@@ -196,4 +197,17 @@ function countTasks (header, tasksArray) {
     header.classList.contains('finished') ?
         header.textContent = `Completed (${tasksArray.length})`:
         header.textContent = `ToDo (${tasksArray.length})`;
+}
+
+sortsBtns.addEventListener('click', (event) => {
+    event.target.closest('.mx-2') ? sortTasks (tasks, true) : sortTasks (tasks, false);
+    renderDom(taskList, tasks);
+})
+
+function sortTasks (tasksArray, flag) {
+    if (flag) {
+        //tasksArray.s
+    } else {
+        console.log('lol');
+    }
 }
