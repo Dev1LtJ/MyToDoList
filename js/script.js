@@ -24,6 +24,7 @@ class Task {
     text = textForm.value;
     priority = this.checkPriority(radios);
     time = this.getTime(new Date());
+    color = this.getPriorityTheme(this.priority);
     checkPriority(radios) {
         for (let radio of radios) {
             if (radio.checked === true) return radio.value;
@@ -38,6 +39,18 @@ class Task {
         (month > 0 && month < 10) ? month = '0' + month : month = month;
         (minutes > 0 && minutes < 10) ? minutes = '0' + minutes : minutes = minutes;
         return `${hours}:${minutes} ${date}.${month}.${year}`;
+    }
+    getPriorityTheme(priority) {
+        if (priority == 'High') {
+            if (document.body.classList.contains('darktheme')) return 'high-priority_dark';
+            return 'high-priority';
+        } else if (priority == 'Medium') {
+            if (document.body.classList.contains('darktheme')) return 'medium-priority_dark';
+            return 'medium-priority';
+        } else if (priority == 'Low') {
+            if (document.body.classList.contains('darktheme')) return 'low-priority_dark';
+            return 'low-priority';
+        }
     }
 }
 
@@ -63,6 +76,7 @@ function renderDom(nodeList, tasksArray) {
     clearPreviousDom(nodeList);
     tasksArray.forEach((item) => {
         let taskElemCopy = taskElem.cloneNode(true);
+        taskElemCopy.classList.add(item.color);
         taskElemCopy.setAttribute('id', item.id);
         taskElemCopy.querySelector('.title').textContent = item.title;
         taskElemCopy.querySelector('.text').textContent = item.text;
@@ -71,6 +85,7 @@ function renderDom(nodeList, tasksArray) {
         nodeList.append(taskElemCopy);
     });
 }
+
 function clearPreviousDom(nodeList) {
     while (nodeList.firstChild) {
         nodeList.firstChild.remove();
@@ -102,14 +117,17 @@ function completeTask (taskId) {
     let taskPosition  = tasks.findIndex((item) => item.id == taskId);
     if (taskPosition == (tasks.length - 1)) {
         let completedTask = tasks.splice(taskPosition, tasks.length - taskPosition)[0];
+        completedTask.color = completeColor(completedTask);
         completedTasks.push(completedTask);
     } else {
         let returnableTasks = tasks.slice(taskPosition + 1);
-        let completedTask = tasks.splice(taskPosition, tasks.length - taskPosition)[0]; 
+        let completedTask = tasks.splice(taskPosition, tasks.length - taskPosition)[0];
+        completedTask.color = completeColor(completedTask); 
         completedTasks.push(completedTask);
         returnableTasks.forEach((item) => tasks.push(item));
         returnableTasks.length = 0;
     }
+    
 }
 //delete task
 function deleteTask (taskId, tasksArray) {
@@ -147,8 +165,8 @@ function editTask(taskId) {
 }
 
 function hideEditDeleteBtns (nodeList) {
-    nodeList.querySelector('.btn-success').hidden = true;
-    nodeList.querySelector('.btn-info').hidden = true;
+    nodeList.querySelectorAll('.btn-success').forEach((item) => item.hidden = true);
+    nodeList.querySelectorAll('.btn-info').forEach((item) => item.hidden = true);
 }
 
 //delete task event delegation for completed tasks
@@ -161,3 +179,8 @@ completedTaskList.addEventListener('click', (event) => {
         return false;
     }
 });
+
+function completeColor (completedTask) {
+    if (completedTask.color.includes('dark')) return 'completed_dark';
+    return 'completed';
+}

@@ -2,3 +2,13 @@ $dark-color: #27272a;
 $highlight-color: rgb(98, 97, 97);
 $theme-color:  rgb(32, 171, 70);
 $white-color: #fff;
+//white-theme
+$high-priority-color: rgba(196, 30, 58, 0.2);
+$medium-priority-color: antiquewhite;
+$low-priority-color: aliceblue;
+$completed-color:  rgba(152, 255, 152, 0.3);
+//dark-theme
+$high-priority-dark-color: rgba(86, 3, 25, 0.2);
+$medium-priority-dark-color: rgba(253, 233, 16, 0.1);
+$low-priority-dark-color: rgba(0, 191, 255, 0.05);
+$completed-dark-color: rgba(32, 171, 70, 0.2);
