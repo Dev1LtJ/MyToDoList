@@ -8,6 +8,8 @@ let submitTaskBtn = document.querySelector('button[type="submit"]'),
     titleForm = document.getElementById('inputTitle'),
     textForm = document.getElementById('inputText'),
     radios = document.querySelectorAll('.form-check-input'),
+    unfinishedHeader = document.querySelector('.unfinished'),
+    finishedHeader = document.querySelector('.finished'),
     tasks = [],
     completedTasks = [];
 
@@ -60,6 +62,7 @@ submitTaskBtn.addEventListener('click', function addTask(event) {
     tasks.push(new Task((tasks.length)));
     closeBtn.dispatchEvent(new Event ('click', {bubbles : true}));
     renderDom(taskList, tasks);
+    countTasks(unfinishedHeader, tasks);
     clearForm();
 });
 
@@ -71,7 +74,6 @@ function clearForm() {
     }
 }
 
-//renderDom
 function renderDom(nodeList, tasksArray) {
     clearPreviousDom(nodeList);
     tasksArray.forEach((item) => {
@@ -97,22 +99,26 @@ taskList.addEventListener('click', (event) => {
     let taskId = event.target.closest('.list-group-item').id;
     if (event.target.classList.contains('btn-success')) {
         completeTask(taskId);
+        countTasks(unfinishedHeader, tasks);
+        countTasks(finishedHeader, completedTasks);
         renderDom(completedTaskList, completedTasks);
         renderDom(taskList, tasks);
         hideEditDeleteBtns(completedTaskList);
     } else if (event.target.classList.contains('btn-info')) {
-        clearForm(); //подумать над ее расположением, почему работает только тут?
+        clearForm();
         editTask(taskId);
+        countTasks(unfinishedHeader, tasks);
         renderDom(taskList, tasks);
     } else if (event.target.classList.contains('btn-danger')) {
         deleteTask(taskId, tasks);
+        countTasks(unfinishedHeader, tasks);
+        countTasks(finishedHeader, completedTasks);
         renderDom(taskList, tasks);
     } else {
         return false;
     }
 });
 
-//complete task
 function completeTask (taskId) {
     let taskPosition  = tasks.findIndex((item) => item.id == taskId);
     if (taskPosition == (tasks.length - 1)) {
@@ -129,7 +135,7 @@ function completeTask (taskId) {
     }
     
 }
-//delete task
+
 function deleteTask (taskId, tasksArray) {
     let taskPosition  = tasksArray.findIndex((item) => item.id == taskId);
     if (taskPosition == (tasksArray.length - 1)) {
@@ -141,7 +147,7 @@ function deleteTask (taskId, tasksArray) {
         returnableTasks.length = 0;
     }
 }
-//edit task
+
 function editTask(taskId) {
     addTaskBtn.dispatchEvent(new Event ('click', {bubbles : true}));
     submitTaskBtn.hidden = true;
@@ -184,4 +190,10 @@ completedTaskList.addEventListener('click', (event) => {
 function completeColor (completedTask) {
     if (completedTask.color.includes('dark')) return 'completed_dark';
     return 'completed';
+}
+
+function countTasks (header, tasksArray) {
+    header.classList.contains('finished') ?
+        header.textContent = `Completed (${tasksArray.length})`:
+        header.textContent = `ToDo (${tasksArray.length})`;
 }
