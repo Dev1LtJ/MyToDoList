@@ -26,23 +26,13 @@ class Task {
     title = titleForm.value;
     text = textForm.value;
     priority = this.checkPriority(radios);
-    time = this.getTime(new Date());
+    time = new Date();
     color = this.getPriorityTheme(this.priority);
     checkPriority(radios) {
         for (let radio of radios) {
             if (radio.checked === true) return radio.value;
         }
     };
-    getTime(timeStamp) {
-        let hours = timeStamp.getHours(),
-            date = timeStamp.getDate(),
-            month = timeStamp.getMonth() + 1,
-            year = timeStamp.getFullYear(),
-            minutes = timeStamp.getMinutes();
-        (month > 0 && month < 10) ? month = '0' + month : month = month;
-        (minutes > 0 && minutes < 10) ? minutes = '0' + minutes : minutes = minutes;
-        return `${hours}:${minutes} ${date}.${month}.${year}`;
-    }
     getPriorityTheme(priority) {
         if (priority == 'High') {
             if (document.body.classList.contains('darktheme')) return 'high-priority_dark';
@@ -55,6 +45,17 @@ class Task {
             return 'low-priority';
         }
     }
+}
+
+function getTime(timeStamp) {
+    let hours = timeStamp.getHours(),
+        date = timeStamp.getDate(),
+        month = timeStamp.getMonth() + 1,
+        year = timeStamp.getFullYear(),
+        minutes = timeStamp.getMinutes();
+    (month > 0 && month < 10) ? month = '0' + month : month = month;
+    (minutes > 0 && minutes < 10) ? minutes = '0' + minutes : minutes = minutes;
+    return `${hours}:${minutes} ${date}.${month}.${year}`;
 }
 
 //create task
@@ -83,7 +84,7 @@ function renderDom(nodeList, tasksArray) {
         taskElemCopy.setAttribute('id', item.id);
         taskElemCopy.querySelector('.title').textContent = item.title;
         taskElemCopy.querySelector('.text').textContent = item.text;
-        taskElemCopy.querySelector('.time').textContent = item.time;
+        taskElemCopy.querySelector('.time').textContent = getTime(item.time);
         taskElemCopy.querySelector('.priority').textContent = item.priority + ' priority';
         nodeList.append(taskElemCopy);
     });
@@ -205,9 +206,5 @@ sortsBtns.addEventListener('click', (event) => {
 })
 
 function sortTasks (tasksArray, flag) {
-    if (flag) {
-        //tasksArray.s
-    } else {
-        console.log('lol');
-    }
+    flag ? tasksArray.sort((a, b) => ~(a.time - b.time)) : tasksArray.sort((a, b) => (a.time - b.time));
 }
