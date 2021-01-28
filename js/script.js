@@ -112,7 +112,7 @@ taskList.addEventListener('click', (event) => {
         countTasks(unfinishedHeader, tasks);
         renderDom(taskList, tasks);
     } else if (event.target.classList.contains('btn-danger')) {
-        deleteTask(taskId, tasks);
+        tasks = deleteTask(taskId, tasks);
         countTasks(unfinishedHeader, tasks);
         countTasks(finishedHeader, completedTasks);
         renderDom(taskList, tasks);
@@ -122,32 +122,19 @@ taskList.addEventListener('click', (event) => {
 });
 
 function completeTask (taskId) {
-    let taskPosition  = tasks.findIndex((item) => item.id == taskId);
-    if (taskPosition == (tasks.length - 1)) {
-        let completedTask = tasks.splice(taskPosition, tasks.length - taskPosition)[0];
-        completedTask.color = completeColor(completedTask);
-        completedTasks.push(completedTask);
-    } else {
-        let returnableTasks = tasks.slice(taskPosition + 1);
-        let completedTask = tasks.splice(taskPosition, tasks.length - taskPosition)[0];
-        completedTask.color = completeColor(completedTask); 
-        completedTasks.push(completedTask);
-        returnableTasks.forEach((item) => tasks.push(item));
-        returnableTasks.length = 0;
-    }
-    
+    let arr = tasks.filter((item) => {
+        if (item.id != taskId) return true;
+        item.color = completeColor(item);
+        completedTasks.push(item);
+    });
+    tasks.length = 0;
+    tasks = arr.slice();
 }
 
 function deleteTask (taskId, tasksArray) {
-    let taskPosition  = tasksArray.findIndex((item) => item.id == taskId);
-    if (taskPosition == (tasksArray.length - 1)) {
-        let completedTask = tasksArray.splice(taskPosition, tasksArray.length - taskPosition)[0];
-    } else {
-        let returnableTasks = tasksArray.slice(taskPosition + 1);
-        let completedTask = tasksArray.splice(taskPosition, tasksArray.length - taskPosition)[0]; 
-        returnableTasks.forEach((item) => tasksArray.push(item));
-        returnableTasks.length = 0;
-    }
+    let arr = tasksArray.filter((item) => (item.id != taskId));
+    tasksArray.length = 0;
+    return tasksArray = arr.slice();
 }
 
 function editTask(taskId) {
@@ -182,7 +169,7 @@ function hideEditDeleteBtns (nodeList) {
 completedTaskList.addEventListener('click', (event) => {
     let taskId = event.target.closest('.list-group-item').id;
     if (event.target.classList.contains('btn-danger')) {
-        deleteTask(taskId, completedTasks);
+        completedTasks = deleteTask(taskId, completedTasks);
         renderDom(completedTaskList, completedTasks);
     } else {
         return false;
