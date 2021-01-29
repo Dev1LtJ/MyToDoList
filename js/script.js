@@ -15,6 +15,24 @@ let submitTaskBtn = document.querySelector('button[type="submit"]'),
     tasks = [],
     completedTasks = [];
 
+    // tasks = Array.from(JSON.parse(localStorage.getItem('tasks')));
+    // completedTasks = Array.from(JSON.parse(localStorage.getItem('completedTasks')));
+
+    // localStorage.clear();
+    // localStorage.setItem('tasks', JSON.stringify(tasks));
+    // localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
+
+//imports
+import {getTime,
+        clearPreviousDom,
+        deleteTask,
+        completeColor,
+        hideEditDeleteBtns,
+        countTasks,
+        sortTasks,
+        completeTask,
+        renderDom} from './DOM.js';
+
 //initial properties
     editTaskBtn.textContent = 'Edit task';
     submitTaskBtn.parentElement.append(editTaskBtn);
@@ -51,23 +69,12 @@ class Task {
     }
 }
 
-function getTime(timeStamp) {
-    let hours = timeStamp.getHours(),
-        date = timeStamp.getDate(),
-        month = timeStamp.getMonth() + 1,
-        year = timeStamp.getFullYear(),
-        minutes = timeStamp.getMinutes();
-    (month >= 0 && month < 10) ? month = '0' + month : month = month;
-    (minutes >= 0 && minutes < 10) ? minutes = '0' + minutes : minutes = minutes;
-    return `${hours}:${minutes} ${date}.${month}.${year}`;
-}
-
 //create task
 submitTaskBtn.addEventListener('click', function addTask(event) {
     event.preventDefault();
-    tasks.push(new Task((tasks.length)));
+    tasks.push(new Task(String(tasks.length)));
     closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
-    renderDom(taskList, tasks);
+    renderDom(taskList, tasks, taskElem);
     countTasks(unfinishedHeader, tasks);
     clearForm();
 });
@@ -80,66 +87,30 @@ function clearForm() {
     }
 }
 
-function renderDom(nodeList, tasksArray) {
-    clearPreviousDom(nodeList);
-    tasksArray.forEach((item) => {
-        let taskElemCopy = taskElem.cloneNode(true);
-        taskElemCopy.classList.add(item.color);
-        taskElemCopy.setAttribute('id', item.id);
-        taskElemCopy.querySelector('.title').textContent = item.title;
-        taskElemCopy.querySelector('.text').textContent = item.text;
-        taskElemCopy.querySelector('.time').textContent = getTime(item.time);
-        taskElemCopy.querySelector('.priority').textContent = item.priority + ' priority';
-        nodeList.append(taskElemCopy);
-    });
-}
-
-function clearPreviousDom(nodeList) {
-    while (nodeList.firstChild) {
-        nodeList.firstChild.remove();
-    }
-}
-
 //delete, complete, edit task event delegation
 taskList.addEventListener('click', (event) => {
     let taskId = event.target.closest('.list-group-item').id;
     if (event.target.classList.contains('btn-success')) {
-        completeTask(taskId);
+        tasks = completeTask(tasks, completedTasks, taskId);
         countTasks(unfinishedHeader, tasks);
         countTasks(finishedHeader, completedTasks);
-        renderDom(completedTaskList, completedTasks);
-        renderDom(taskList, tasks);
+        renderDom(completedTaskList, completedTasks, taskElem);
+        renderDom(taskList, tasks, taskElem);
         hideEditDeleteBtns(completedTaskList);
     } else if (event.target.classList.contains('btn-info')) {
         clearForm();
         editTask(taskId);
         countTasks(unfinishedHeader, tasks);
-        renderDom(taskList, tasks);
+        renderDom(taskList, tasks, taskElem);
     } else if (event.target.classList.contains('btn-danger')) {
         tasks = deleteTask(taskId, tasks);
         countTasks(unfinishedHeader, tasks);
         countTasks(finishedHeader, completedTasks);
-        renderDom(taskList, tasks);
+        renderDom(taskList, tasks, taskElem);
     } else {
         return false;
     }
 });
-
-function completeTask (taskId) {
-    let arr = tasks.filter((item) => {
-        if (item.id != taskId) return true;
-        item.color = completeColor(item);
-        completedTasks.push(item);
-    });
-    tasks.length = 0;
-    tasks = arr.slice();
-}
-
-function deleteTask (taskId, tasksArray) {
-    let arr = tasksArray.filter((item) => (item.id != taskId));
-    tasksArray.length = 0;
-    return tasksArray = arr.slice();
-}
 
 function editTask(taskId) {
     addTaskBtn.dispatchEvent(new Event ('click', {bubbles : true}));
@@ -160,13 +131,8 @@ function editTask(taskId) {
         submitTaskBtn.hidden = false;
         editTaskBtn.hidden = true;
         closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
-        renderDom(taskList, tasks);
+        renderDom(taskList, tasks, taskElem);
     });
-}
-
-function hideEditDeleteBtns (nodeList) {
-    nodeList.querySelectorAll('.btn-success').forEach((item) => item.hidden = true);
-    nodeList.querySelectorAll('.btn-info').forEach((item) => item.hidden = true);
 }
 
 //delete task event delegation for completed tasks
@@ -175,31 +141,26 @@ completedTaskList.addEventListener('click', (event) => {
     if (event.target.classList.contains('btn-danger')) {
         completedTasks = deleteTask(taskId, completedTasks);
         countTasks(finishedHeader, completedTasks);
-        renderDom(completedTaskList, completedTasks);
+        renderDom(completedTaskList, completedTasks, taskElem);
+        hideEditDeleteBtns(completedTaskList);
     } else {
         return false;
     }
 });
 
-function completeColor (completedTask) {
-    if (completedTask.color.includes('dark')) return 'completed_dark';
-    return 'completed';
-}
-
-function countTasks (header, tasksArray) {
-    header.classList.contains('finished') ?
-        header.textContent = `Completed (${tasksArray.length})`:
-        header.textContent = `ToDo (${tasksArray.length})`;
-}
-
 sortsBtns.addEventListener('click', (event) => {
     event.target.closest('.mx-2') ? sortTasks (tasks, true) : sortTasks (tasks, false);
-    renderDom(taskList, tasks);
+    renderDom(taskList, tasks, taskElem);
 })
 
-function sortTasks (tasksArray, flag) {
-    flag ? tasksArray.sort((a, b) => ~(a.time - b.time)) : tasksArray.sort((a, b) => (a.time - b.time));
-}
+closeBtn.addEventListener('click', ()=> {
+    clearForm();
+    submitTaskBtn.hidden = false;
+    editTaskBtn.hidden = true;
+});
 
-closeBtn.addEventListener('click', clearForm);
-closeCross.addEventListener('click', clearForm);
+closeCross.addEventListener('click', ()=> {
+    clearForm();
+    submitTaskBtn.hidden = false;
+    editTaskBtn.hidden = true;
+});
