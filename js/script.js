@@ -4,7 +4,8 @@ let submitTaskBtn = document.querySelector('button[type="submit"]'),
     taskList = document.getElementById('currentTasks'),
     completedTaskList = document.getElementById('completedTasks'),
     taskElem = document.querySelector('.list-group-item'),
-    closeBtn = document.querySelector('.close'),
+    closeBtn = document.querySelector('.closeBtn'),
+    closeCross = document.querySelector('.close'),
     titleForm = document.getElementById('inputTitle'),
     textForm = document.getElementById('inputText'),
     radios = document.querySelectorAll('.form-check-input'),
@@ -18,6 +19,7 @@ let submitTaskBtn = document.querySelector('button[type="submit"]'),
     editTaskBtn.textContent = 'Edit task';
     submitTaskBtn.parentElement.append(editTaskBtn);
     editTaskBtn.hidden = true;
+    taskElem.remove();
 
 class Task {
     constructor(id) {
@@ -32,17 +34,19 @@ class Task {
         for (let radio of radios) {
             if (radio.checked === true) return radio.value;
         }
+        return 'Low';
     };
     getPriorityTheme(priority) {
-        if (priority == 'High') {
-            if (document.body.classList.contains('darktheme')) return 'high-priority_dark';
-            return 'high-priority';
-        } else if (priority == 'Medium') {
-            if (document.body.classList.contains('darktheme')) return 'medium-priority_dark';
-            return 'medium-priority';
-        } else if (priority == 'Low') {
-            if (document.body.classList.contains('darktheme')) return 'low-priority_dark';
-            return 'low-priority';
+        switch (priority) {
+            case 'High':
+                if (document.body.classList.contains('darktheme')) return 'high-priority_dark';
+                return 'high-priority';
+            case 'Medium':
+                if (document.body.classList.contains('darktheme')) return 'medium-priority_dark';
+                return 'medium-priority';
+            case 'Low':
+                if (document.body.classList.contains('darktheme')) return 'low-priority_dark';
+                return 'low-priority';
         }
     }
 }
@@ -53,8 +57,8 @@ function getTime(timeStamp) {
         month = timeStamp.getMonth() + 1,
         year = timeStamp.getFullYear(),
         minutes = timeStamp.getMinutes();
-    (month > 0 && month < 10) ? month = '0' + month : month = month;
-    (minutes > 0 && minutes < 10) ? minutes = '0' + minutes : minutes = minutes;
+    (month >= 0 && month < 10) ? month = '0' + month : month = month;
+    (minutes >= 0 && minutes < 10) ? minutes = '0' + minutes : minutes = minutes;
     return `${hours}:${minutes} ${date}.${month}.${year}`;
 }
 
@@ -62,7 +66,7 @@ function getTime(timeStamp) {
 submitTaskBtn.addEventListener('click', function addTask(event) {
     event.preventDefault();
     tasks.push(new Task((tasks.length)));
-    closeBtn.dispatchEvent(new Event ('click', {bubbles : true}));
+    closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
     renderDom(taskList, tasks);
     countTasks(unfinishedHeader, tasks);
     clearForm();
@@ -141,11 +145,11 @@ function editTask(taskId) {
     addTaskBtn.dispatchEvent(new Event ('click', {bubbles : true}));
     submitTaskBtn.hidden = true;
     editTaskBtn.hidden = false;
-    let taskPosition  = tasks.findIndex((item) => item.id == taskId);
+    let taskPosition  = tasks.findIndex((item) => item.id === taskId);
     titleForm.value = tasks[taskPosition].title;
     textForm.value = tasks[taskPosition].text;
     for (let radio of radios) {
-        if (radio.value == tasks[taskPosition].priority) radio.checked = true;
+        if (radio.value === tasks[taskPosition].priority) radio.checked = true;
     }
     editTaskBtn.addEventListener('click', function editTask(event) {
         event.preventDefault();
@@ -155,7 +159,7 @@ function editTask(taskId) {
         tasks[taskPosition].color = tasks[taskPosition].getPriorityTheme(tasks[taskPosition].priority);
         submitTaskBtn.hidden = false;
         editTaskBtn.hidden = true;
-        closeBtn.dispatchEvent(new Event ('click', {bubbles : true}));
+        closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
         renderDom(taskList, tasks);
     });
 }
@@ -170,6 +174,7 @@ completedTaskList.addEventListener('click', (event) => {
     let taskId = event.target.closest('.list-group-item').id;
     if (event.target.classList.contains('btn-danger')) {
         completedTasks = deleteTask(taskId, completedTasks);
+        countTasks(finishedHeader, completedTasks);
         renderDom(completedTaskList, completedTasks);
     } else {
         return false;
@@ -195,3 +200,6 @@ sortsBtns.addEventListener('click', (event) => {
 function sortTasks (tasksArray, flag) {
     flag ? tasksArray.sort((a, b) => ~(a.time - b.time)) : tasksArray.sort((a, b) => (a.time - b.time));
 }
+
+closeBtn.addEventListener('click', clearForm);
+closeCross.addEventListener('click', clearForm);
