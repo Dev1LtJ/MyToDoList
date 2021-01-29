@@ -64,3 +64,11 @@ export function completeTask (tasks, completedTasks, taskId) {
     tasks.length = 0;
     return tempArr.slice();
 }
+
+export function clearForm(titleForm, textForm, radios) {
+    titleForm.value = '';
+    textForm.value = '';
+    for (let radio of radios) {
+        radio.checked = false;
+    }
+}

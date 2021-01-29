@@ -15,13 +15,6 @@ let submitTaskBtn = document.querySelector('button[type="submit"]'),
     tasks = [],
     completedTasks = [];
 
-    // tasks = Array.from(JSON.parse(localStorage.getItem('tasks')));
-    // completedTasks = Array.from(JSON.parse(localStorage.getItem('completedTasks')));
-
-    // localStorage.clear();
-    // localStorage.setItem('tasks', JSON.stringify(tasks));
-    // localStorage.setItem('completedTasks', JSON.stringify(completedTasks));
-
 //imports
 import {getTime,
         clearPreviousDom,
@@ -31,13 +24,19 @@ import {getTime,
         countTasks,
         sortTasks,
         completeTask,
-        renderDom} from './DOM.js';
+        renderDom,
+        clearForm} from './DOM.js';
+import {setToLocalStorage, getFromLocalStorage} from './localStorage.js';
 
 //initial properties
     editTaskBtn.textContent = 'Edit task';
     submitTaskBtn.parentElement.append(editTaskBtn);
     editTaskBtn.hidden = true;
     taskElem.remove();
+
+    // document.addEventListener('DOMContentLoaded', ()=> {
+    //     renderDom(taskList, JSON.parse(localStorage.getItem('tasks')), taskElem);
+    // });
 
 class Task {
     constructor(id) {
@@ -76,16 +75,10 @@ submitTaskBtn.addEventListener('click', function addTask(event) {
     closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
     renderDom(taskList, tasks, taskElem);
     countTasks(unfinishedHeader, tasks);
-    clearForm();
+    clearForm(titleForm, textForm, radios);
 });
 
-function clearForm() {
-    titleForm.value = '';
-    textForm.value = '';
-    for (let radio of radios) {
-        radio.checked = false;
-    }
-}
+
 
 //delete, complete, edit task event delegation
 taskList.addEventListener('click', (event) => {
@@ -98,7 +91,7 @@ taskList.addEventListener('click', (event) => {
         renderDom(taskList, tasks, taskElem);
         hideEditDeleteBtns(completedTaskList);
     } else if (event.target.classList.contains('btn-info')) {
-        clearForm();
+        clearForm(titleForm, textForm, radios);
         editTask(taskId);
         countTasks(unfinishedHeader, tasks);
         renderDom(taskList, tasks, taskElem);
@@ -154,13 +147,13 @@ sortsBtns.addEventListener('click', (event) => {
 })
 
 closeBtn.addEventListener('click', ()=> {
-    clearForm();
+    clearForm(titleForm, textForm, radios);
     submitTaskBtn.hidden = false;
     editTaskBtn.hidden = true;
 });
 
 closeCross.addEventListener('click', ()=> {
-    clearForm();
+    clearForm(titleForm, textForm, radios);
     submitTaskBtn.hidden = false;
     editTaskBtn.hidden = true;
 });
