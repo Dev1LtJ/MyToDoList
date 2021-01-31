@@ -34,9 +34,11 @@ import {setToLocalStorage, getFromLocalStorage} from './localStorage.js';
     editTaskBtn.hidden = true;
     taskElem.remove();
 
-    // document.addEventListener('DOMContentLoaded', ()=> {
-    //     renderDom(taskList, JSON.parse(localStorage.getItem('tasks')), taskElem);
-    // });
+    document.addEventListener('DOMContentLoaded', ()=> {
+        tasks = getFromLocalStorage(true) ? getFromLocalStorage(true) : [];
+        renderDom(taskList, tasks, taskElem);
+        //renderDom(completedTaskList, getFromLocalStorage(false), taskElem);
+    });
 
 class Task {
     constructor(id) {
@@ -45,7 +47,7 @@ class Task {
     title = titleForm.value;
     text = textForm.value;
     priority = this.checkPriority(radios);
-    time = new Date();
+    time = Date.parse(new Date());
     color = this.getPriorityTheme(this.priority);
     checkPriority(radios) {
         for (let radio of radios) {
@@ -72,7 +74,9 @@ class Task {
 submitTaskBtn.addEventListener('click', function addTask(event) {
     event.preventDefault();
     tasks.push(new Task(String(tasks.length)));
+    console.log(tasks);
     closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
+    setToLocalStorage(tasks, true);
     renderDom(taskList, tasks, taskElem);
     countTasks(unfinishedHeader, tasks);
     clearForm(titleForm, textForm, radios);
@@ -85,6 +89,7 @@ taskList.addEventListener('click', (event) => {
     let taskId = event.target.closest('.list-group-item').id;
     if (event.target.classList.contains('btn-success')) {
         tasks = completeTask(tasks, completedTasks, taskId);
+        setToLocalStorage(tasks, true);
         countTasks(unfinishedHeader, tasks);
         countTasks(finishedHeader, completedTasks);
         renderDom(completedTaskList, completedTasks, taskElem);
@@ -93,10 +98,12 @@ taskList.addEventListener('click', (event) => {
     } else if (event.target.classList.contains('btn-info')) {
         clearForm(titleForm, textForm, radios);
         editTask(taskId);
+        setToLocalStorage(tasks, true);
         countTasks(unfinishedHeader, tasks);
         renderDom(taskList, tasks, taskElem);
     } else if (event.target.classList.contains('btn-danger')) {
         tasks = deleteTask(taskId, tasks);
+        setToLocalStorage(tasks, true);
         countTasks(unfinishedHeader, tasks);
         countTasks(finishedHeader, completedTasks);
         renderDom(taskList, tasks, taskElem);

@@ -6,7 +6,7 @@ export function renderDom(nodeList, tasksArray, nodeTemplate) {
         taskElemCopy.setAttribute('id', item.id);
         taskElemCopy.querySelector('.title').textContent = item.title;
         taskElemCopy.querySelector('.text').textContent = item.text;
-        taskElemCopy.querySelector('.time').textContent = getTime(item.time);
+        taskElemCopy.querySelector('.time').textContent = getTime(new Date(item.time));
         taskElemCopy.querySelector('.priority').textContent = item.priority + ' priority';
         nodeList.append(taskElemCopy);
     });
