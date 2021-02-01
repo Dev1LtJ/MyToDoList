@@ -25,7 +25,9 @@ import {getTime,
         sortTasks,
         completeTask,
         renderDom,
-        clearForm} from './DOM.js';
+        clearForm, 
+        checkPriority,
+        getPriorityTheme} from './DOM.js';
 import {setToLocalStorage, getFromLocalStorage} from './localStorage.js';
 
 //initial properties
@@ -50,28 +52,9 @@ class Task {
     }
     title = titleForm.value;
     text = textForm.value;
-    priority = this.checkPriority(radios);
+    priority = checkPriority(radios);
     time = new Date();
-    color = this.getPriorityTheme(this.priority);
-    checkPriority(radios) {
-        for (let radio of radios) {
-            if (radio.checked === true) return radio.value;
-        }
-        return 'Low';
-    };
-    getPriorityTheme(priority) {
-        switch (priority) {
-            case 'High':
-                if (document.body.classList.contains('darktheme')) return 'high-priority_dark';
-                return 'high-priority';
-            case 'Medium':
-                if (document.body.classList.contains('darktheme')) return 'medium-priority_dark';
-                return 'medium-priority';
-            case 'Low':
-                if (document.body.classList.contains('darktheme')) return 'low-priority_dark';
-                return 'low-priority';
-        }
-    }
+    color = getPriorityTheme(this.priority);
 }
 
 //create task
@@ -102,42 +85,13 @@ taskList.addEventListener('click', (event) => {
     } else if (event.target.classList.contains('btn-info')) {
         clearForm(titleForm, textForm, radios);
         editTask(taskId);
-        setToLocalStorage(tasks, true);
-        countTasks(unfinishedHeader, tasks);
-        renderDom(taskList, tasks, taskElem);
     } else if (event.target.classList.contains('btn-danger')) {
         tasks = deleteTask(taskId, tasks);
         setToLocalStorage(tasks, true);
         countTasks(unfinishedHeader, tasks);
-        countTasks(finishedHeader, completedTasks);
         renderDom(taskList, tasks, taskElem);
-    } else {
-        return false;
     }
 });
-
-function editTask(taskId) {
-    addTaskBtn.dispatchEvent(new Event ('click', {bubbles : true}));
-    submitTaskBtn.hidden = true;
-    editTaskBtn.hidden = false;
-    let taskPosition  = tasks.findIndex((item) => item.id === taskId);
-    titleForm.value = tasks[taskPosition].title;
-    textForm.value = tasks[taskPosition].text;
-    for (let radio of radios) {
-        if (radio.value === tasks[taskPosition].priority) radio.checked = true;
-    }
-    editTaskBtn.addEventListener('click', function editTask(event) {
-        event.preventDefault();
-        tasks[taskPosition].title = titleForm.value;
-        tasks[taskPosition].text = textForm.value;
-        tasks[taskPosition].priority = tasks[taskPosition].checkPriority(radios);
-        tasks[taskPosition].color = tasks[taskPosition].getPriorityTheme(tasks[taskPosition].priority);
-        submitTaskBtn.hidden = false;
-        editTaskBtn.hidden = true;
-        closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
-        renderDom(taskList, tasks, taskElem);
-    });
-}
 
 //delete task event delegation for completed tasks
 completedTaskList.addEventListener('click', (event) => {
@@ -169,3 +123,27 @@ closeCross.addEventListener('click', ()=> {
     submitTaskBtn.hidden = false;
     editTaskBtn.hidden = true;
 });
+
+function editTask(taskId) {
+    addTaskBtn.dispatchEvent(new Event ('click', {bubbles : true}));
+    submitTaskBtn.hidden = true;
+    editTaskBtn.hidden = false;
+    let taskPosition  = tasks.findIndex((item) => item.id === taskId);
+    titleForm.value = tasks[taskPosition].title;
+    textForm.value = tasks[taskPosition].text;
+    for (let radio of radios) {
+        if (radio.value === tasks[taskPosition].priority) radio.checked = true;
+    }
+    editTaskBtn.addEventListener('click', function editTask(event) {
+        event.preventDefault();
+        tasks[taskPosition].title = titleForm.value;
+        tasks[taskPosition].text = textForm.value;
+        tasks[taskPosition].priority = checkPriority(radios);
+        tasks[taskPosition].color = getPriorityTheme(tasks[taskPosition].priority);
+        submitTaskBtn.hidden = false;
+        editTaskBtn.hidden = true;
+        closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
+        setToLocalStorage(tasks, true);
+        renderDom(taskList, tasks, taskElem);
+    });
+}

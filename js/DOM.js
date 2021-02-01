@@ -73,3 +73,24 @@ export function clearForm(titleForm, textForm, radios) {
         radio.checked = false;
     }
 }
+
+export function checkPriority(radios) {
+    for (let radio of radios) {
+        if (radio.checked === true) return radio.value;
+    }
+    return 'Low';
+};
+
+export function getPriorityTheme(priority) {
+    switch (priority) {
+        case 'High':
+            if (document.body.classList.contains('darktheme')) return 'high-priority_dark';
+            return 'high-priority';
+        case 'Medium':
+            if (document.body.classList.contains('darktheme')) return 'medium-priority_dark';
+            return 'medium-priority';
+        case 'Low':
+            if (document.body.classList.contains('darktheme')) return 'low-priority_dark';
+            return 'low-priority';
+    }
+}
