@@ -34,11 +34,15 @@ import {setToLocalStorage, getFromLocalStorage} from './localStorage.js';
     editTaskBtn.hidden = true;
     taskElem.remove();
 
-    document.addEventListener('DOMContentLoaded', ()=> {
-        tasks = getFromLocalStorage(true) ? getFromLocalStorage(true) : [];
-        renderDom(taskList, tasks, taskElem);
-        //renderDom(completedTaskList, getFromLocalStorage(false), taskElem);
-    });
+document.addEventListener('DOMContentLoaded', ()=> {
+    tasks = getFromLocalStorage(true) ? tasks = getFromLocalStorage(true) : tasks = [];
+    renderDom(taskList, tasks, taskElem);
+    countTasks(unfinishedHeader, tasks);
+    completedTasks = getFromLocalStorage(false) ? completedTasks = getFromLocalStorage(false) : completedTasks = [];
+    renderDom(completedTaskList, completedTasks, taskElem);
+    countTasks(finishedHeader, completedTasks);
+    hideEditDeleteBtns(completedTaskList);
+});
 
 class Task {
     constructor(id) {
@@ -47,7 +51,7 @@ class Task {
     title = titleForm.value;
     text = textForm.value;
     priority = this.checkPriority(radios);
-    time = Date.parse(new Date());
+    time = new Date();
     color = this.getPriorityTheme(this.priority);
     checkPriority(radios) {
         for (let radio of radios) {
@@ -74,7 +78,6 @@ class Task {
 submitTaskBtn.addEventListener('click', function addTask(event) {
     event.preventDefault();
     tasks.push(new Task(String(tasks.length)));
-    console.log(tasks);
     closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
     setToLocalStorage(tasks, true);
     renderDom(taskList, tasks, taskElem);
@@ -90,6 +93,7 @@ taskList.addEventListener('click', (event) => {
     if (event.target.classList.contains('btn-success')) {
         tasks = completeTask(tasks, completedTasks, taskId);
         setToLocalStorage(tasks, true);
+        setToLocalStorage(completedTasks, false);
         countTasks(unfinishedHeader, tasks);
         countTasks(finishedHeader, completedTasks);
         renderDom(completedTaskList, completedTasks, taskElem);
@@ -140,6 +144,7 @@ completedTaskList.addEventListener('click', (event) => {
     let taskId = event.target.closest('.list-group-item').id;
     if (event.target.classList.contains('btn-danger')) {
         completedTasks = deleteTask(taskId, completedTasks);
+        setToLocalStorage(completedTasks, false);
         countTasks(finishedHeader, completedTasks);
         renderDom(completedTaskList, completedTasks, taskElem);
         hideEditDeleteBtns(completedTaskList);

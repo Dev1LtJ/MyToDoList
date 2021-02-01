@@ -6,7 +6,7 @@ export function renderDom(nodeList, tasksArray, nodeTemplate) {
         taskElemCopy.setAttribute('id', item.id);
         taskElemCopy.querySelector('.title').textContent = item.title;
         taskElemCopy.querySelector('.text').textContent = item.text;
-        taskElemCopy.querySelector('.time').textContent = getTime(new Date(item.time));
+        taskElemCopy.querySelector('.time').textContent = getTime(item.time);
         taskElemCopy.querySelector('.priority').textContent = item.priority + ' priority';
         nodeList.append(taskElemCopy);
     });
@@ -18,6 +18,7 @@ export function getTime(timeStamp) {
         month = timeStamp.getMonth() + 1,
         year = timeStamp.getFullYear(),
         minutes = timeStamp.getMinutes();
+    (date >= 0 && month < 10) ? date = '0' + date : date = date;
     (month >= 0 && month < 10) ? month = '0' + month : month = month;
     (minutes >= 0 && minutes < 10) ? minutes = '0' + minutes : minutes = minutes;
     return `${hours}:${minutes} ${date}.${month}.${year}`;
