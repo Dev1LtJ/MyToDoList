@@ -28,7 +28,6 @@ import {getTime,
         clearForm, 
         checkPriority,
         getPriorityTheme} from './DOM.js';
-//import {Task} from './class.js';
 import {setToLocalStorage, getFromLocalStorage} from './localStorage.js';
 
 //initial properties
