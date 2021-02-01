@@ -28,6 +28,7 @@ import {getTime,
         clearForm, 
         checkPriority,
         getPriorityTheme} from './DOM.js';
+import {Task} from './class.js';
 import {setToLocalStorage, getFromLocalStorage} from './localStorage.js';
 
 //initial properties
@@ -35,7 +36,7 @@ import {setToLocalStorage, getFromLocalStorage} from './localStorage.js';
     submitTaskBtn.parentElement.append(editTaskBtn);
     editTaskBtn.hidden = true;
     taskElem.remove();
-
+//onload
 document.addEventListener('DOMContentLoaded', ()=> {
     tasks = getFromLocalStorage(true) ? tasks = getFromLocalStorage(true) : tasks = [];
     renderDom(taskList, tasks, taskElem);
@@ -45,17 +46,6 @@ document.addEventListener('DOMContentLoaded', ()=> {
     countTasks(finishedHeader, completedTasks);
     hideEditDeleteBtns(completedTaskList);
 });
-
-class Task {
-    constructor(id) {
-        this.id = id;
-    }
-    title = titleForm.value;
-    text = textForm.value;
-    priority = checkPriority(radios);
-    time = new Date();
-    color = getPriorityTheme(this.priority);
-}
 
 //create task
 submitTaskBtn.addEventListener('click', function addTask(event) {
@@ -67,8 +57,6 @@ submitTaskBtn.addEventListener('click', function addTask(event) {
     countTasks(unfinishedHeader, tasks);
     clearForm(titleForm, textForm, radios);
 });
-
-
 
 //delete, complete, edit task event delegation
 taskList.addEventListener('click', (event) => {
