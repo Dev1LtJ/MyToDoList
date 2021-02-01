@@ -28,7 +28,7 @@ import {getTime,
         clearForm, 
         checkPriority,
         getPriorityTheme} from './DOM.js';
-import {Task} from './class.js';
+//import {Task} from './class.js';
 import {setToLocalStorage, getFromLocalStorage} from './localStorage.js';
 
 //initial properties
@@ -46,6 +46,17 @@ document.addEventListener('DOMContentLoaded', ()=> {
     countTasks(finishedHeader, completedTasks);
     hideEditDeleteBtns(completedTaskList);
 });
+
+class Task {
+    constructor(id) {
+        this.id = id;
+    }
+    title = titleForm.value;
+    text = textForm.value;
+    priority = checkPriority(radios);
+    time = new Date();
+    color = getPriorityTheme(this.priority);
+}
 
 //create task
 submitTaskBtn.addEventListener('click', function addTask(event) {
