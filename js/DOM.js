@@ -68,7 +68,11 @@ export function completeTask (tasks, completedTasks, taskId) {
 
 export function clearForm(titleForm, textForm, radios) {
     titleForm.value = '';
+    titleForm.setAttribute('placeholder', 'Title');
+    titleForm.style.borderColor = '#ced4da';
     textForm.value = '';
+    textForm.setAttribute('placeholder', 'Text');
+    textForm.style.borderColor = '#ced4da';
     for (let radio of radios) {
         radio.checked = false;
     }
@@ -78,7 +82,6 @@ export function checkPriority(radios) {
     for (let radio of radios) {
         if (radio.checked === true) return radio.value;
     }
-    return 'Low';
 };
 
 export function getPriorityTheme(priority) {
@@ -93,4 +96,11 @@ export function getPriorityTheme(priority) {
             if (document.body.classList.contains('darktheme')) return 'low-priority_dark';
             return 'low-priority';
     }
+}
+
+export function checkInputs (titleForm, textForm) {
+    textForm.dispatchEvent(new Event ('change'), {bubbles : true});
+    titleForm.dispatchEvent(new Event ('change'), {bubbles : true});
+    if (titleForm.value && textForm.value) return true;
+    return false;
 }

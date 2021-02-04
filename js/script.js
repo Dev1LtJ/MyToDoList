@@ -12,6 +12,8 @@ let submitTaskBtn = document.querySelector('button[type="submit"]'),
     unfinishedHeader = document.querySelector('.unfinished'),
     finishedHeader = document.querySelector('.finished'),
     sortsBtns = document.querySelector('.sorts'),
+    modalFade = document.getElementById('exampleModal'),
+    validity = false,
     tasks = [],
     completedTasks = [];
 
@@ -27,7 +29,8 @@ import {getTime,
         renderDom,
         clearForm, 
         checkPriority,
-        getPriorityTheme} from './DOM.js';
+        getPriorityTheme,
+        checkInputs} from './DOM.js';
 import {setToLocalStorage, getFromLocalStorage} from './localStorage.js';
 
 //initial properties
@@ -60,6 +63,7 @@ class Task {
 //create task
 submitTaskBtn.addEventListener('click', function addTask(event) {
     event.preventDefault();
+    if(!checkInputs (titleForm, textForm)) return false;
     tasks.push(new Task(String(tasks.length)));
     closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
     setToLocalStorage(tasks, true);
@@ -110,17 +114,20 @@ sortsBtns.addEventListener('click', (event) => {
     renderDom(taskList, tasks, taskElem);
 })
 
-closeBtn.addEventListener('click', ()=> {
-    clearForm(titleForm, textForm, radios);
-    submitTaskBtn.hidden = false;
-    editTaskBtn.hidden = true;
+closeBtn.addEventListener('click', offEditMode);
+closeCross.addEventListener('click', offEditMode);
+addTaskBtn.addEventListener('click', ()=> {
+    offEditMode();
+    for (let radio of radios) {
+        if (radio.value === 'Medium') radio.checked = true;
+    }
 });
 
-closeCross.addEventListener('click', ()=> {
+function offEditMode () {
     clearForm(titleForm, textForm, radios);
     submitTaskBtn.hidden = false;
     editTaskBtn.hidden = true;
-});
+}
 
 function editTask(taskId) {
     addTaskBtn.dispatchEvent(new Event ('click', {bubbles : true}));
@@ -145,3 +152,44 @@ function editTask(taskId) {
         renderDom(taskList, tasks, taskElem);
     });
 }
+
+titleForm.addEventListener('change', (event)=> {
+    if (!event.target.value) {
+        event.target.style.borderColor = 'red';
+        event.target.setAttribute('placeholder', 'This field is required');
+    } else {
+        event.target.style.borderColor = '#ced4da';
+        event.target.setAttribute('placeholder', 'Title');
+    }
+});
+textForm.addEventListener('change', (event)=> {
+    if (!event.target.value) {
+        event.target.style.borderColor = 'red';
+        event.target.setAttribute('placeholder', 'This field is required');
+    } else {
+        event.target.style.borderColor = '#ced4da';
+        event.target.setAttribute('placeholder', 'Text');
+    }
+});
+
+//Спросить у Паши, почему так не работает.
+// function inputsColorizer (elem, placeholderText) {
+//     if (!elem.value) {
+//         elem.borderColor = 'red';
+//         elem.setAttribute('placeholder', 'This field is required');
+//     } else {
+//         elem.style.borderColor = '#ced4da';
+//         elem.setAttribute('placeholder', placeholderText);
+//     }
+// }
+
+// titleForm.addEventListener('change', inputsColorizer (titleForm, 'Title'));
+// textForm.addEventListener('change', inputsColorizer (textForm, 'Text'));
+
+// taskList.onmousedown = (event)=> {
+//     if (!event.target.closest('.list-group-item')) return false;
+//     let item = event.target.closest('.list-group-item');
+//     item.style.position = 'absolute';
+//     item.style.zIndex = 1000;
+//     document.body.append(item);
+// }
