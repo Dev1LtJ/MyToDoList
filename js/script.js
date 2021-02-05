@@ -12,9 +12,8 @@ let submitTaskBtn = document.querySelector('button[type="submit"]'),
     unfinishedHeader = document.querySelector('.unfinished'),
     finishedHeader = document.querySelector('.finished'),
     sortsBtns = document.querySelector('.sorts'),
-    modalFade = document.getElementById('exampleModal'),
-    validity = false,
     tasks = [],
+    taskElements = [],
     completedTasks = [];
 
 //imports
@@ -74,6 +73,7 @@ submitTaskBtn.addEventListener('click', function addTask(event) {
 
 //delete, complete, edit task event delegation
 taskList.addEventListener('click', (event) => {
+    if (!event.target.closest('.list-group-item')) return false;
     let taskId = event.target.closest('.list-group-item').id;
     if (event.target.classList.contains('btn-success')) {
         tasks = completeTask(tasks, completedTasks, taskId);
@@ -193,3 +193,38 @@ textForm.addEventListener('change', (event)=> {
 //     item.style.zIndex = 1000;
 //     document.body.append(item);
 // }
+
+taskList.addEventListener('dragstart', (event)=> {
+    if (!event.target.closest('.list-group-item')) return false;
+    event.target.classList.add('selected');
+});
+
+document.addEventListener('dragover', (event)=> {
+    event.preventDefault();
+    let listsArray = Array.from(document.querySelectorAll('.list-group'));
+    let hr = document.querySelector('hr');
+    let dragElement = taskList.querySelector('.selected');
+    if (!dragElement) return false;
+    let dragElementListId = dragElement.closest('.list-group').id;
+    let targetList = listsArray.find((item)=> item.id != dragElementListId);
+
+    let hrCoords = hr.getBoundingClientRect();
+    let hrHeight = hrCoords.y + hrCoords.height;
+
+    if (event.clientY > hrHeight) {
+        taskList.addEventListener('dragend', (event)=> {
+            targetList.append(dragElement);
+            tasks = completeTask(tasks, completedTasks, dragElement.id);
+            setToLocalStorage(tasks, true);
+            setToLocalStorage(completedTasks, false);
+            countTasks(unfinishedHeader, tasks);
+            countTasks(finishedHeader, completedTasks);
+            renderDom(completedTaskList, completedTasks, taskElem);
+            renderDom(taskList, tasks, taskElem);
+            hideEditDeleteBtns(completedTaskList);
+            event.target.classList.remove('selected');
+        });
+    } else {
+        return;
+    }
+});
