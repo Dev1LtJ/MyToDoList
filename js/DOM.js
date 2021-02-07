@@ -1,6 +1,7 @@
-export function renderDom(nodeList, tasksArray, nodeTemplate) {
-    clearPreviousDom(nodeList);
-    tasksArray.forEach((item) => {
+export function renderDom(unfinishedNodeList, finishedNodeList, tasks, nodeTemplate) {
+    clearPreviousDom(unfinishedNodeList);
+    clearPreviousDom(finishedNodeList);
+    tasks.forEach((item) => {
         let taskElemCopy = nodeTemplate.cloneNode(true);
         taskElemCopy.classList.add(item.color);
         taskElemCopy.setAttribute('id', item.id);
@@ -8,8 +9,9 @@ export function renderDom(nodeList, tasksArray, nodeTemplate) {
         taskElemCopy.querySelector('.text').textContent = item.text;
         taskElemCopy.querySelector('.time').textContent = getTime(item.time);
         taskElemCopy.querySelector('.priority').textContent = item.priority + ' priority';
-        nodeList.append(taskElemCopy);
+        item.status === 'done' ? finishedNodeList.append(taskElemCopy) : unfinishedNodeList.append(taskElemCopy);
     });
+    hideEditDeleteBtns(finishedNodeList);
 }
 
 export function getTime(timeStamp) {
@@ -29,60 +31,39 @@ export function clearPreviousDom(nodeList) {
         nodeList.firstChild.remove();
     }
 }
+//Может стоить включить в состав функции renderDom??
+export function hideEditDeleteBtns (nodeList) {
+    nodeList.querySelectorAll('.btn-success').forEach((item) => item.hidden = true);
+    nodeList.querySelectorAll('.btn-info').forEach((item) => item.hidden = true);
+}
+//Может стоить включить в состав функции renderDom??
+export function countTasks (unfinishedHeader, finishedHeader, tasks) {
+    let unfinished = null,
+        finished = null;
+    tasks.forEach((item) => {item.status === 'done' ? finished++ : unfinished++;});
+    finishedHeader.textContent = `Completed (${finished})`;
+    unfinishedHeader.textContent = `ToDo (${unfinished})`;
+}
 
-export function deleteTask (taskId, tasksArray) {
-    let tempArr = tasksArray.filter((item) => (item.id != taskId));
-    tasksArray.length = 0;
-    return tempArr.slice();
+export function sortTasks (tasks, flag) {
+    flag ? tasks.sort((a, b) => ~(a.time - b.time)) : tasks.sort((a, b) => (a.time - b.time));
+}
+
+export function completeTask (tasks, taskId) {
+    let taskPosition = tasks.findIndex((item) => item.id === taskId);
+    tasks[taskPosition].status = 'done';
+    tasks[taskPosition].color = completeColor(tasks[taskPosition]);
+}
+
+export function deleteTask (tasks, taskId) {
+    let taskPosition = tasks.findIndex((item) => item.id === taskId);
+    tasks.splice(taskPosition, 1);
 }
 
 export function completeColor (completedTask) {
     if (completedTask.color.includes('dark')) return 'completed_dark';
     return 'completed';
 }
-
-export function hideEditDeleteBtns (nodeList) {
-    nodeList.querySelectorAll('.btn-success').forEach((item) => item.hidden = true);
-    nodeList.querySelectorAll('.btn-info').forEach((item) => item.hidden = true);
-}
-
-export function countTasks (header, tasksArray) {
-    header.classList.contains('finished') ?
-        header.textContent = `Completed (${tasksArray.length})`:
-        header.textContent = `ToDo (${tasksArray.length})`;
-}
-
-export function sortTasks (tasksArray, flag) {
-    flag ? tasksArray.sort((a, b) => ~(a.time - b.time)) : tasksArray.sort((a, b) => (a.time - b.time));
-}
-
-export function completeTask (tasks, completedTasks, taskId) {
-    let tempArr = tasks.filter((item) => {
-        if (item.id != taskId) return true;
-        item.color = completeColor(item);
-        completedTasks.push(item);
-    });
-    tasks.length = 0;
-    return tempArr.slice();
-}
-
-export function clearForm(titleForm, textForm, radios) {
-    titleForm.value = '';
-    titleForm.setAttribute('placeholder', 'Title');
-    titleForm.style.borderColor = '#ced4da';
-    textForm.value = '';
-    textForm.setAttribute('placeholder', 'Text');
-    textForm.style.borderColor = '#ced4da';
-    for (let radio of radios) {
-        radio.checked = false;
-    }
-}
-
-export function checkPriority(radios) {
-    for (let radio of radios) {
-        if (radio.checked === true) return radio.value;
-    }
-};
 
 export function getPriorityTheme(priority) {
     switch (priority) {
@@ -95,6 +76,24 @@ export function getPriorityTheme(priority) {
         case 'Low':
             if (document.body.classList.contains('darktheme')) return 'low-priority_dark';
             return 'low-priority';
+    }
+}
+
+export function checkPriority(radios) {
+    for (let radio of radios) {
+        if (radio.checked === true) return radio.value;
+    }
+};
+
+export function clearForm(titleForm, textForm, radios) {
+    titleForm.value = '';
+    titleForm.setAttribute('placeholder', 'Title');
+    titleForm.style.borderColor = '#ced4da';
+    textForm.value = '';
+    textForm.setAttribute('placeholder', 'Text');
+    textForm.style.borderColor = '#ced4da';
+    for (let radio of radios) {
+        radio.checked = false;
     }
 }
 
