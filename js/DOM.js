@@ -61,7 +61,7 @@ export function deleteTask (tasks, taskId) {
 }
 
 export function completeColor (completedTask) {
-    if (completedTask.color.includes('dark')) return 'completed_dark';
+    if (document.body.classList.contains('darktheme')) return 'completed_dark';
     return 'completed';
 }
 

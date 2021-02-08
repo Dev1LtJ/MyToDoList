@@ -5,6 +5,7 @@ let body = document.body,
     toggle__btn = document.createElement('div'),
     toggle__descr = document.createElement('div'),
     toggle__img = document.createElement('img');
+    export {toggle__btn};
 //toggler creation
 settings.innerHTML = ('');
 toggle.classList.add('toggle');

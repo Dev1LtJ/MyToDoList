@@ -12,9 +12,7 @@ let submitTaskBtn = document.querySelector('button[type="submit"]'),
     unfinishedHeader = document.querySelector('.unfinished'),
     finishedHeader = document.querySelector('.finished'),
     sortsBtns = document.querySelector('.sorts'),
-    tasks = [],
-    taskElements = [],
-    completedTasks = [];
+    tasks = [];
 
 //imports
 import {getTime,
@@ -31,12 +29,19 @@ import {getTime,
         getPriorityTheme,
         checkInputs} from './DOM.js';
 import {setToLocalStorage, getFromLocalStorage} from './localStorage.js';
+import {toggle__btn} from './theme-toggler.js';
 
 //initial properties
     editTaskBtn.textContent = 'Edit task';
     submitTaskBtn.parentElement.append(editTaskBtn);
     editTaskBtn.hidden = true;
     taskElem.remove();
+    toggle__btn.addEventListener('click', ()=> {
+        tasks.forEach((item) => {
+            item.status === 'done' ? item.color = completeColor(item) : item.color = getPriorityTheme(item.priority);
+        });
+        renderDom(taskList, completedTaskList, tasks, taskElem);
+    })
 
 document.addEventListener('DOMContentLoaded', ()=> {
     tasks = getFromLocalStorage() ? tasks = getFromLocalStorage() : tasks = [];
