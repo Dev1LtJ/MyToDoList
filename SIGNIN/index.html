@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enter ToDoList</title>
+    <link rel="preconnect" href="https://fonts.gstatic.com">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.min.css">
+</head>
+<body>
+    <div class="container">
+        <div class="auth-form">
+            <div class="auth-form__header">
+                <img class="auth-form__logo" src="icons/logo.png" alt="logo">
+                <div class="auth-form__title">Enter ToDoList</div>
+            </div>
+            <div class="auth-form__body">
+                <form action="#">
+                    <div class="auth-form__input">
+                        <label for="email">Email</label>
+                        <input required placeholder="ivanpetrov@mail.com" name="email" id="email" type="email">
+                    </div>
+                    <span class="auth-form__email-check">Email correct checker</span>
+                    <div class="auth-form__input">
+                        <label for="password">Password</label>
+                        <input required placeholder="Enter your password" name="password" id="password" type="password">
+                    </div>
+                    <span class="auth-form__password-check">Password correct checker</span>
+                    <button class="auth-form__signin" type="submit">Sign in</button>
+                    <button class="auth-form__signup" type="#">Sign Up</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <script src="js/script.js"></script>
+</body>
+</html>
