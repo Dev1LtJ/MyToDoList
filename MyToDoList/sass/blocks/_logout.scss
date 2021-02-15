@@ -1,0 +1,23 @@
+.logout {
+    margin-top: 5px;
+    padding-left: 5px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    &__img {
+        margin-right: 38px;
+        display: block;
+        width: 18px;
+        height: 18px;
+    }
+    a {
+        color: #000;
+    }
+    &__descr {
+        
+        font-size: 14px;
+        line-height: 20px;
+        height: 20px;
+        cursor: pointer;
+    }
+}

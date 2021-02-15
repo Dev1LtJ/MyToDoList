@@ -1,0 +1,28 @@
+.toggle {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    &__btn {
+        position: relative;
+        background-color: $white-color;
+        width: 40px;
+        height: 20px;
+        border: 1px solid $white-color;
+        border-radius: 20px;
+        cursor: pointer;
+    }
+    &__descr {
+        margin-left: 20px;
+        height: 20px;
+        font-size: 14px;
+        line-height: 20px;
+    }
+    &__img {
+        position: absolute;
+        top: 0;
+        left: 0;
+        display: block;
+        width: 18px;
+        height: 18px;
+    }
+}
