@@ -16,21 +16,19 @@ let submitTaskBtn = document.querySelector('button[type="submit"]'),
     mainHeader = document.querySelector('h1'),
     currentUser = {},
     currentUserIndex = 0,
-    users = [],
-    tasks = [];
-
+    users = [];
 
 //imports
 import {deleteTask,
         completeColor,
-        countTasks,
         sortTasks,
         completeTask,
-        renderDom,
+        renderDOM,
         clearForm, 
         checkPriority,
         getPriorityTheme,
-        checkInputs} from './DOM.js';
+        checkInputs,
+        inputsColorizer} from './DOM.js';
 import {setToLocalStorage,
         getFromLocalStorage} from './localStorage.js';
 import {toggle__btn} from './theme-toggler.js';
@@ -44,16 +42,15 @@ import {toggle__btn} from './theme-toggler.js';
         users[currentUserIndex].tasks.forEach((item) => {
             item.status === 'done' ? item.color = completeColor(item) : item.color = getPriorityTheme(item.priority);
         });
-        renderDom(taskList, completedTaskList, users[currentUserIndex].tasks, taskElem);
-    })
+        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
+    });
 
 document.addEventListener('DOMContentLoaded', () => {
     currentUser = getFromLocalStorage('currentUser');
     users = getFromLocalStorage('users');
     currentUserIndex = users.findIndex((item) => item.email === currentUser.email);
     mainHeader.textContent = `${currentUser.name} ${currentUser.surname}'s ToDoList`
-    renderDom(taskList, completedTaskList, users[currentUserIndex].tasks, taskElem);
-    countTasks(unfinishedHeader, finishedHeader, users[currentUserIndex].tasks);
+    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
 });
 
 class Task {
@@ -78,8 +75,7 @@ submitTaskBtn.addEventListener('click', function addTask(event) {
     users[currentUserIndex].tasks.push(new Task(String(id)));
     closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
     setToLocalStorage(users, 'users');
-    renderDom(taskList, completedTaskList, users[currentUserIndex].tasks, taskElem);
-    countTasks(unfinishedHeader, finishedHeader, users[currentUserIndex].tasks);
+    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
     clearForm(titleForm, textForm, radios);
 });
 
@@ -89,16 +85,14 @@ taskList.addEventListener('click', (event) => {
     if (event.target.classList.contains('btn-success')) {
         completeTask(users[currentUserIndex].tasks, taskId);
         setToLocalStorage(users, 'users');
-        renderDom(taskList, completedTaskList, users[currentUserIndex].tasks, taskElem);
-        countTasks(unfinishedHeader, finishedHeader, users[currentUserIndex].tasks);
+        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
     } else if (event.target.classList.contains('btn-info')) {
         clearForm(titleForm, textForm, radios);
         editTaskMode(taskId);
     } else if (event.target.classList.contains('btn-danger')) {
         deleteTask(users[currentUserIndex].tasks, taskId);
         setToLocalStorage(users, 'users');
-        renderDom(taskList, completedTaskList, users[currentUserIndex].tasks, taskElem);
-        countTasks(unfinishedHeader, finishedHeader, users[currentUserIndex].tasks);
+        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
     }
 });
 
@@ -107,13 +101,12 @@ completedTaskList.addEventListener('click', (event) => {
     if (!event.target.classList.contains('btn-danger')) return false;
     deleteTask(users[currentUserIndex].tasks, taskId);
     setToLocalStorage(users, 'users');
-    renderDom(taskList, completedTaskList, users[currentUserIndex].tasks, taskElem);
-    countTasks(unfinishedHeader, finishedHeader, users[currentUserIndex].tasks);
+    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
 });
 
 sortsBtns.addEventListener('click', (event) => {
     event.target.closest('.mx-2') ? sortTasks (users[currentUserIndex].tasks, true) : sortTasks (users[currentUserIndex].tasks, false);
-    renderDom(taskList, completedTaskList, users[currentUserIndex].tasks, taskElem);
+    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
 })
 
 closeBtn.addEventListener('click', offEditMode);
@@ -148,7 +141,7 @@ function editTaskMode(taskId) {
         users[currentUserIndex].tasks[taskPosition].priority = checkPriority(radios);
         users[currentUserIndex].tasks[taskPosition].color = getPriorityTheme(users[currentUserIndex].tasks[taskPosition].priority);
         setToLocalStorage(users, 'users');
-        renderDom(taskList, completedTaskList, users[currentUserIndex].tasks, taskElem);
+        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
         closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
     }, {once: true});
 }
@@ -156,19 +149,8 @@ function editTaskMode(taskId) {
 titleForm.addEventListener('change', (event) => inputsColorizer (event.target, 'Title'));
 textForm.addEventListener('change', (event) => inputsColorizer (event.target, 'Text'));
 
-function inputsColorizer (elem, placeholderText) {
-    if (!elem.value) {
-        elem.style.borderColor = '#FF0000';
-        elem.setAttribute('placeholder', 'This field is required');
-    } else {
-        elem.style.borderColor = '#ced4da';
-        elem.setAttribute('placeholder', placeholderText);
-    }
-}
-
 document.addEventListener('dragstart', (event)=> {
-    if (!event.target.closest('.list-group-item')) return false;
-    if (!event.target.closest('#currentTasks')) return false;
+    if (!event.target.closest('.list-group-item') || !event.target.closest('#currentTasks')) return false;
     event.target.classList.add('selected');
 });
 
@@ -188,8 +170,7 @@ document.addEventListener('dragover', (event)=> {
             completedTaskList.append(dragElement);
             completeTask(users[currentUserIndex].tasks, taskElement.id);
             setToLocalStorage(users, 'users');
-            renderDom(taskList, completedTaskList, users[currentUserIndex].tasks, taskElem);
-            countTasks(unfinishedHeader, finishedHeader, users[currentUserIndex].tasks);
+            renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
             dragElement.classList.remove('selected');
         } else {
             dragElement.classList.remove('selected');

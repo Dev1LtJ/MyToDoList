@@ -1,4 +1,4 @@
-export function renderDom(unfinishedNodeList, finishedNodeList, tasks, nodeTemplate) {
+export function renderDOM(unfinishedNodeList, unfinishedHeader, finishedNodeList, finishedHeader, tasks, nodeTemplate) {
     clearPreviousDom(unfinishedNodeList);
     clearPreviousDom(finishedNodeList);
     tasks.forEach((item) => {
@@ -12,9 +12,23 @@ export function renderDom(unfinishedNodeList, finishedNodeList, tasks, nodeTempl
         item.status === 'done' ? finishedNodeList.append(taskElemCopy) : unfinishedNodeList.append(taskElemCopy);
     });
     hideEditDeleteBtns(finishedNodeList);
+    countTasks (unfinishedHeader, finishedHeader, tasks)
 }
 
-export function getTime(timeStamp) {
+function hideEditDeleteBtns (nodeList) {
+    nodeList.querySelectorAll('.btn-success').forEach((item) => item.hidden = true);
+    nodeList.querySelectorAll('.btn-info').forEach((item) => item.hidden = true);
+}
+
+function countTasks (unfinishedHeader, finishedHeader, tasks) {
+    let unfinished = 0,
+        finished = 0;
+    tasks.forEach((item) => {item.status === 'done' ? finished++ : unfinished++;});
+    finishedHeader.textContent = `Completed (${finished})`;
+    unfinishedHeader.textContent = `ToDo (${unfinished})`;
+}
+
+function getTime(timeStamp) {
     let hours = timeStamp.getHours(),
         date = timeStamp.getDate(),
         month = timeStamp.getMonth() + 1,
@@ -26,23 +40,10 @@ export function getTime(timeStamp) {
     return `${hours}:${minutes} ${date}.${month}.${year}`;
 }
 
-export function clearPreviousDom(nodeList) {
+function clearPreviousDom(nodeList) {
     while (nodeList.firstChild) {
         nodeList.firstChild.remove();
     }
-}
-//Может стоить включить в состав функции renderDom??
-export function hideEditDeleteBtns (nodeList) {
-    nodeList.querySelectorAll('.btn-success').forEach((item) => item.hidden = true);
-    nodeList.querySelectorAll('.btn-info').forEach((item) => item.hidden = true);
-}
-//Может стоить включить в состав функции renderDom??
-export function countTasks (unfinishedHeader, finishedHeader, tasks) {
-    let unfinished = 0,
-        finished = 0;
-    tasks.forEach((item) => {item.status === 'done' ? finished++ : unfinished++;});
-    finishedHeader.textContent = `Completed (${finished})`;
-    unfinishedHeader.textContent = `ToDo (${unfinished})`;
 }
 
 export function sortTasks (tasks, flag) {
@@ -83,7 +84,7 @@ export function checkPriority(radios) {
     for (let radio of radios) {
         if (radio.checked === true) return radio.value;
     }
-};
+}
 
 export function clearForm(titleForm, textForm, radios) {
     titleForm.value = '';
@@ -102,4 +103,14 @@ export function checkInputs (titleForm, textForm) {
     titleForm.dispatchEvent(new Event ('change'), {bubbles : true});
     if (titleForm.value && textForm.value) return true;
     return false;
+}
+
+export function inputsColorizer (elem, placeholderText) {
+    if (!elem.value) {
+        elem.style.borderColor = '#FF0000';
+        elem.setAttribute('placeholder', 'This field is required');
+    } else {
+        elem.style.borderColor = '#ced4da';
+        elem.setAttribute('placeholder', placeholderText);
+    }
 }
