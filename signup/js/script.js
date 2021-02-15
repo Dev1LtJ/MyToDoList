@@ -9,8 +9,24 @@ let passwordBar = document.querySelector('.auth-form__divider'),
     repeatedPassword = document.getElementById('repeatedPassword'),
     backButton = document.querySelector('.auth-form__back'),
     submitButton = document.querySelector('.auth-form__signup');
-//variables
+//variables, constants
 let users = [];
+const
+    COLOR_GREEN_VISIBLE = 'rgba(48, 112, 240, 1)',
+    COLOR_GREEN_INVISIBLE = 'rgba(48, 112, 240, 0)',
+    COLOR_BLUE_VISIBLE = 'rgba(88, 134, 27, 1)',
+    COLOR_BLUE_INVISIBLE = 'rgba(88, 134, 27, 0)',
+    COLOR_INCORRECT = '#fd1000',
+    COLOR_CORRENT = '#7dbf26';
+
+import {setToLocalStorage,
+        getFromLocalStorage} from '../../MyToDoList/js/localStorage.js';
+
+document.addEventListener('DOMContentLoaded', () => {
+    users = getFromLocalStorage('users') ?
+        users = getFromLocalStorage('users') :
+        users = [];
+});
 
 class User {
     constructor(name) {
@@ -25,21 +41,24 @@ class User {
 
 submitButton.addEventListener('click', (event)=> {
     event.preventDefault();
-    users.push(new User(username.value));
-    setToLocalStorage (users);
+    let newUser = new User(username.value);
+    users.push(newUser);
+    setToLocalStorage(users, 'users');
+    setToLocalStorage(newUser, 'currentUser');
+    document.location.replace('../MyToDoList/index.html');
 });
 
 backButton.addEventListener('mouseover', (event)=> {
-    event.target.closest('.auth-form__btn-wrapper').style.borderColor = 'rgba(48, 112, 240, 1)';
+    event.target.closest('.auth-form__btn-wrapper').style.borderColor = COLOR_GREEN_VISIBLE;
 });
 backButton.addEventListener('mouseout', (event)=> {
-    event.target.closest('.auth-form__btn-wrapper').style.borderColor = 'rgba(48, 112, 240, 0)';
+    event.target.closest('.auth-form__btn-wrapper').style.borderColor = COLOR_GREEN_INVISIBLE;
 });
 submitButton.addEventListener('mouseover', (event)=> {
-    event.target.closest('.auth-form__btn-wrapper_small').style.borderColor = 'rgba(88, 134, 27, 1)';
+    event.target.closest('.auth-form__btn-wrapper_small').style.borderColor = COLOR_BLUE_VISIBLE;
 });
 submitButton.addEventListener('mouseout', (event)=> {
-    event.target.closest('.auth-form__btn-wrapper_small').style.borderColor = 'rgba(88, 134, 27, 0)';
+    event.target.closest('.auth-form__btn-wrapper_small').style.borderColor = COLOR_BLUE_INVISIBLE;
 });
 
 repeatedPassword.addEventListener('input', (event)=> checkPassword(event.target, password));
@@ -49,18 +68,10 @@ function checkPassword (baseElement, trackingElement) {
     if (baseElement.value != trackingElement.value) {
         passwordBar.style.backgroundColor = '#fd1000';
         passwordCheck.textContent = 'Passwords do not match';
-        passwordCheck.style.color = '#fd1000';
+        passwordCheck.style.color = COLOR_INCORRECT;
     } else {
         passwordBar.style.backgroundColor = '#7dbf26';
         passwordCheck.textContent = 'Passwords match';
-        passwordCheck.style.color = '#7dbf26';
+        passwordCheck.style.color = COLOR_CORRENT;
     }
-}
-
-function setToLocalStorage (users) {
-    localStorage.setItem('users', JSON.stringify(users));
-}
-
-function getFromLocalStorage () {
-    return JSON.parse(localStorage.getItem('users'));
 }
