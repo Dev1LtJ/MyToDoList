@@ -94,7 +94,7 @@ html {
             height: 2px;
             width: 98%;
         }
-        &__password-check {
+        &__password-check, &__login-check, &__email-check {
             margin-top: 5px;
             display: block;
             font-size: 11px;
