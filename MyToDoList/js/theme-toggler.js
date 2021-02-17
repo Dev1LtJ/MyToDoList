@@ -6,6 +6,7 @@ let body = document.body,
     toggle__descr = document.createElement('div'),
     toggle__img = document.createElement('img');
     export {toggle__btn};
+    export {toggle__descr};
 //toggler creation
 settings.innerHTML = ('');
 toggle.classList.add('toggle');
@@ -24,31 +25,31 @@ toggle__btn.addEventListener('click', (event) => {
     body.classList.toggle('darktheme');
     if (body.classList.contains('darktheme')) {
         toggle__img.setAttribute('src', 'icons/moon.svg');
-        moveToggle(true);
+        moveToggle(toggle__img, true);
     } else {
         toggle__img.setAttribute('src', 'icons/sun.svg');
-        moveToggle(false);
+        moveToggle(toggle__img, false);
     }
 });
-function moveToggle(value) {
+export function moveToggle(element, value) {
     let left = null;
     value ? left = 0 : left = 22;
     if (value) {
         let timer = setTimeout(function run() {
-            if (toggle__img.style.left === '22px') {
+            if (element.style.left === '22px') {
                 clearTimeout(timer);
             } else {
-                toggle__img.style.left = left + 'px';
+                element.style.left = left + 'px';
                 left++;
                 setTimeout(run, 10);
             }
         }, 10);
     } else {
         let timer = setTimeout(function run() {
-            if (toggle__img.style.left === '0px') {
+            if (element.style.left === '0px') {
                 clearTimeout(timer);
             } else {
-                toggle__img.style.left = left + 'px';
+                element.style.left = left + 'px';
                 left--;
                 setTimeout(run, 10);
             }

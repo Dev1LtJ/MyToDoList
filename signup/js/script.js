@@ -67,8 +67,12 @@ submitButton.addEventListener('mouseout', (event)=> {
     event.target.closest('.auth-form__btn-wrapper_small').style.borderColor = COLOR_BLUE_INVISIBLE;
 });
 
-repeatedPassword.addEventListener('input', (event)=> checkPassword(event.target, password));
-password.addEventListener('input', (event)=> checkPassword(event.target, repeatedPassword));
+repeatedPassword.addEventListener('input', (event) => {
+    setTimeout(() => checkPassword(event.target, password), 1500) 
+});
+// password.addEventListener('input', (event) => {
+//     setTimeout(()=> checkPassword(event.target, repeatedPassword), 1000)
+// });
 
 function checkPassword (baseElement, trackingElement) {
     if (baseElement.value != trackingElement.value) {

@@ -13,12 +13,14 @@ let submitTaskBtn = document.querySelector('button[type="submit"]'),
     finishedHeader = document.querySelector('.finished'),
     sortsBtns = document.querySelector('.sorts'),
     hr = document.querySelector('hr'),
-    mainHeader = document.querySelector('h1'),
     currentUser = {},
     currentUserIndex = 0,
+    lang = 'EN',
     users = [];
 
-//imports
+export {lang};
+export {currentUser};
+
 import {deleteTask,
         completeColor,
         sortTasks,
@@ -32,25 +34,31 @@ import {deleteTask,
 import {setToLocalStorage,
         getFromLocalStorage} from './localStorage.js';
 import {toggle__btn} from './theme-toggler.js';
+import {lang__btn} from './lang.js';
 
 //initial properties
     editTaskBtn.textContent = 'Edit task';
     submitTaskBtn.parentElement.append(editTaskBtn);
     editTaskBtn.hidden = true;
     taskElem.remove();
-    toggle__btn.addEventListener('click', ()=> {
-        users[currentUserIndex].tasks.forEach((item) => {
-            item.status === 'done' ? item.color = completeColor(item) : item.color = getPriorityTheme(item.priority);
-        });
-        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
-    });
 
 document.addEventListener('DOMContentLoaded', () => {
     currentUser = getFromLocalStorage('currentUser');
     users = getFromLocalStorage('users');
     currentUserIndex = users.findIndex((item) => item.email === currentUser.email);
-    mainHeader.textContent = `${currentUser.name} ${currentUser.surname}'s ToDoList`
-    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
+    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem, lang);
+
+    toggle__btn.addEventListener('click', ()=> {
+        users[currentUserIndex].tasks.forEach((item) => {
+            item.status === 'done' ? item.color = completeColor(item) : item.color = getPriorityTheme(item.priority);
+        });
+        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem, lang);
+    });
+
+    lang__btn.addEventListener('click', ()=> {
+        lang === 'RU' ? lang = 'EN' : lang = 'RU';
+        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem, lang);
+    });
 });
 
 class Task {
@@ -75,8 +83,8 @@ submitTaskBtn.addEventListener('click', function addTask(event) {
     users[currentUserIndex].tasks.push(new Task(String(id)));
     closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
     setToLocalStorage(users, 'users');
-    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
-    clearForm(titleForm, textForm, radios);
+    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem, lang);
+    clearForm(titleForm, textForm, radios, lang);
 });
 
 taskList.addEventListener('click', (event) => {
@@ -85,14 +93,14 @@ taskList.addEventListener('click', (event) => {
     if (event.target.classList.contains('btn-success')) {
         completeTask(users[currentUserIndex].tasks, taskId);
         setToLocalStorage(users, 'users');
-        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
+        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem, lang);
     } else if (event.target.classList.contains('btn-info')) {
-        clearForm(titleForm, textForm, radios);
+        clearForm(titleForm, textForm, radios, lang);
         editTaskMode(taskId);
     } else if (event.target.classList.contains('btn-danger')) {
         deleteTask(users[currentUserIndex].tasks, taskId);
         setToLocalStorage(users, 'users');
-        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
+        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem, lang);
     }
 });
 
@@ -101,12 +109,12 @@ completedTaskList.addEventListener('click', (event) => {
     if (!event.target.classList.contains('btn-danger')) return false;
     deleteTask(users[currentUserIndex].tasks, taskId);
     setToLocalStorage(users, 'users');
-    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
+    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem, lang);
 });
 
 sortsBtns.addEventListener('click', (event) => {
     event.target.closest('.mx-2') ? sortTasks (users[currentUserIndex].tasks, true) : sortTasks (users[currentUserIndex].tasks, false);
-    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
+    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem, lang);
 })
 
 closeBtn.addEventListener('click', offEditMode);
@@ -119,7 +127,7 @@ addTaskBtn.addEventListener('click', ()=> {
 });
 
 function offEditMode () {
-    clearForm(titleForm, textForm, radios);
+    clearForm(titleForm, textForm, radios, lang);
     submitTaskBtn.hidden = false;
     editTaskBtn.hidden = true;
 }
@@ -141,13 +149,13 @@ function editTaskMode(taskId) {
         users[currentUserIndex].tasks[taskPosition].priority = checkPriority(radios);
         users[currentUserIndex].tasks[taskPosition].color = getPriorityTheme(users[currentUserIndex].tasks[taskPosition].priority);
         setToLocalStorage(users, 'users');
-        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
+        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem, lang);
         closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
     }, {once: true});
 }
 
-titleForm.addEventListener('change', (event) => inputsColorizer (event.target, 'Title'));
-textForm.addEventListener('change', (event) => inputsColorizer (event.target, 'Text'));
+titleForm.addEventListener('change', (event) => inputsColorizer (event.target, lang, 'title'));
+textForm.addEventListener('change', (event) => inputsColorizer (event.target, lang, 'text'));
 
 document.addEventListener('dragstart', (event)=> {
     if (!event.target.closest('.list-group-item') || !event.target.closest('#currentTasks')) return false;
@@ -170,7 +178,7 @@ document.addEventListener('dragover', (event)=> {
             completedTaskList.append(dragElement);
             completeTask(users[currentUserIndex].tasks, taskElement.id);
             setToLocalStorage(users, 'users');
-            renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
+            renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem, lang);
             dragElement.classList.remove('selected');
         } else {
             dragElement.classList.remove('selected');

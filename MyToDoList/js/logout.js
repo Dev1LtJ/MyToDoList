@@ -1,10 +1,10 @@
-let body = document.body,
-    settings = document.querySelector('.dropdown-menu'),
+let settings = document.querySelector('.dropdown-menu'),
     logout = document.createElement('div'),
     logout__descr = document.createElement('div'),
     logout__link = document.createElement('a'),
     logout__img = document.createElement('img');
     export {logout__link};
+    export {logout__descr};
 
     logout__img.setAttribute('src', 'icons/logout.svg');
     logout__link.setAttribute('href', '../index.html');
