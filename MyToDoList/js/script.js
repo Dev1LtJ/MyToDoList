@@ -37,7 +37,7 @@ import {toggle__btn} from './theme-toggler.js';
 import {lang__btn} from './lang.js';
 
 //initial properties
-    editTaskBtn.textContent = 'Edit task';
+    editTaskBtn.setAttribute('id', 'editTask');
     submitTaskBtn.parentElement.append(editTaskBtn);
     editTaskBtn.hidden = true;
     taskElem.remove();

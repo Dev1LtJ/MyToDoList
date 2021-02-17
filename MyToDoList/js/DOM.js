@@ -1,7 +1,7 @@
 let addTaskBtn, mainHeader, logoutDescr,
     langDescr, themeDescr, labelTitle,
     labelText, labelPriority, addTaskModalTitle,
-    labelRadios, closeBtn, submitTaskBtn;
+    labelRadios, closeBtn, submitTaskBtn, editTaskBtn;
 
 document.addEventListener('DOMContentLoaded', () => {
     addTaskBtn = document.getElementById('addTask'),
@@ -16,11 +16,12 @@ document.addEventListener('DOMContentLoaded', () => {
     labelRadios = document.querySelectorAll('.form-check-label');
     closeBtn = document.querySelector('.closeBtn');
     submitTaskBtn = document.querySelector('button[type="submit"]');
+    editTaskBtn = document.getElementById('editTask');
 });
 
 import {currentUser} from './script.js';
 
-function renderEnvironment (addTaskBtn, mainHeader, langDescr, logoutDescr, themeDescr, labelTitle, labelText, labelPriority, addTaskModalTitle, labelRadios, closeBtn, submitTaskBtn, lang) {
+function renderEnvironment (addTaskBtn, mainHeader, langDescr, logoutDescr, themeDescr, labelTitle, labelText, labelPriority, addTaskModalTitle, labelRadios, closeBtn, submitTaskBtn, editTaskBtn, lang) {
     addTaskBtn.textContent = langObj[lang].addtask;
     mainHeader.textContent = `${langObj[lang].todolist} ${currentUser.name} ${currentUser.surname}`;
     langDescr.textContent = langObj[lang].language;
@@ -35,6 +36,7 @@ function renderEnvironment (addTaskBtn, mainHeader, langDescr, logoutDescr, them
     }
     closeBtn.textContent = langObj[lang].close;
     submitTaskBtn.textContent = langObj[lang].addtask;
+    editTaskBtn.textContent = langObj[lang].edittask;
 }
 
 export function renderDOM(unfinishedNodeList, unfinishedHeader, finishedNodeList, finishedHeader, tasks, nodeTemplate, lang) {
@@ -55,7 +57,7 @@ export function renderDOM(unfinishedNodeList, unfinishedHeader, finishedNodeList
     });
     hideEditDeleteBtns (finishedNodeList);
     countTasks (unfinishedHeader, finishedHeader, tasks, lang);
-    renderEnvironment (addTaskBtn, mainHeader, langDescr, logoutDescr, themeDescr, labelTitle, labelText, labelPriority, addTaskModalTitle, labelRadios, closeBtn, submitTaskBtn, lang);
+    renderEnvironment (addTaskBtn, mainHeader, langDescr, logoutDescr, themeDescr, labelTitle, labelText, labelPriority, addTaskModalTitle, labelRadios, closeBtn, submitTaskBtn, editTaskBtn, lang);
 }
 
 function hideEditDeleteBtns (nodeList) {
@@ -166,6 +168,7 @@ const langObj = {
         medium: 'Средний',
         high: 'Высокий',
         addtask: 'Добавить',
+        edittask: 'Изменить',
         theme: 'Тема',
         logout: 'Выйти',
         language: 'Язык',
@@ -186,6 +189,7 @@ const langObj = {
         medium: 'Medium',
         high: 'High',
         addtask: 'Add task',
+        edittask: 'Edit task',
         theme: 'Theme',
         logout: 'Logout',
         language: 'Language',
