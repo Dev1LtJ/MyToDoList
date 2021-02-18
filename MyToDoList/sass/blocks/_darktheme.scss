@@ -84,6 +84,13 @@
         }   
     }
     .logout__descr {
-        color: #fff;
+        color: $white-color;
+    }
+    .lang__descr {
+        color: $white-color;
+    }
+    .lang__btn {
+        border-color: $highlight-color;
+        background-color: $highlight-color;
     }
 }

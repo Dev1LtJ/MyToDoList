@@ -1,13 +1,11 @@
-let body = document.body,
-    settings = document.querySelector('.dropdown-menu'),
+let menu = document.querySelector('.dropdown-menu'),
     lang = document.createElement('div'),
     lang__btn = document.createElement('div'),
     lang__descr = document.createElement('div'),
     lang__img = document.createElement('img');
-    export {lang__btn};
+    export {lang__btn, lang__img};
     export {lang__descr};
 
-    lang__img.setAttribute('src', 'icons/en.svg');
     lang__img.classList.add('lang__img');
 
     lang.classList.add('lang');
@@ -20,14 +18,14 @@ let body = document.body,
     lang__btn.append(lang__img);
     lang.append(lang__btn);
     lang.append(lang__descr);
-    settings.append(lang);
+    menu.append(lang);
 
     import {moveToggle} from './theme-toggler.js';
-    import {lang as langSet} from './script.js';
+    import {settings} from './script.js';
 
     lang__btn.addEventListener('click', (event) => {
         event.stopPropagation();
-        if (langSet == 'EN') {
+        if (settings.lang == 'EN') {
             lang__img.setAttribute('src', 'icons/ru.svg');
             moveToggle(lang__img, true);
         } else {

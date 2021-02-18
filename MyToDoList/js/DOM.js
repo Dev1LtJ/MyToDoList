@@ -20,44 +20,45 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 import {currentUser} from './script.js';
+import {settings} from './script.js';
 
-function renderEnvironment (addTaskBtn, mainHeader, langDescr, logoutDescr, themeDescr, labelTitle, labelText, labelPriority, addTaskModalTitle, labelRadios, closeBtn, submitTaskBtn, editTaskBtn, lang) {
-    addTaskBtn.textContent = langObj[lang].addtask;
-    mainHeader.textContent = `${langObj[lang].todolist} ${currentUser.name} ${currentUser.surname}`;
-    langDescr.textContent = langObj[lang].language;
-    logoutDescr.textContent = langObj[lang].logout;
-    themeDescr.textContent = langObj[lang].theme;
-    labelTitle.textContent = langObj[lang].title;
-    labelText.textContent = langObj[lang].text;
-    labelPriority.textContent = langObj[lang].priority;
-    addTaskModalTitle.textContent = langObj[lang].addtask;
+function renderEnvironment (addTaskBtn, mainHeader, langDescr, logoutDescr, themeDescr, labelTitle, labelText, labelPriority, addTaskModalTitle, labelRadios, closeBtn, submitTaskBtn, editTaskBtn) {
+    addTaskBtn.textContent = langObj[settings.lang].addtask;
+    mainHeader.textContent = `${langObj[settings.lang].todolist} ${currentUser.name} ${currentUser.surname}`;
+    langDescr.textContent = langObj[settings.lang].language;
+    logoutDescr.textContent = langObj[settings.lang].logout;
+    themeDescr.textContent = langObj[settings.lang].theme;
+    labelTitle.textContent = langObj[settings.lang].title;
+    labelText.textContent = langObj[settings.lang].text;
+    labelPriority.textContent = langObj[settings.lang].priority;
+    addTaskModalTitle.textContent = langObj[settings.lang].addtask;
     for (let radioLabel of labelRadios) {
-        radioLabel.textContent = langObj[lang][radioLabel.getAttribute('for').toLowerCase()];
+        radioLabel.textContent = langObj[settings.lang][radioLabel.getAttribute('for').toLowerCase()];
     }
-    closeBtn.textContent = langObj[lang].close;
-    submitTaskBtn.textContent = langObj[lang].addtask;
-    editTaskBtn.textContent = langObj[lang].edittask;
+    closeBtn.textContent = langObj[settings.lang].close;
+    submitTaskBtn.textContent = langObj[settings.lang].addtask;
+    editTaskBtn.textContent = langObj[settings.lang].edittask;
 }
 
-export function renderDOM(unfinishedNodeList, unfinishedHeader, finishedNodeList, finishedHeader, tasks, nodeTemplate, lang) {
+export function renderDOM(unfinishedNodeList, unfinishedHeader, finishedNodeList, finishedHeader, tasks, nodeTemplate) {
     clearPreviousDom(unfinishedNodeList);
     clearPreviousDom(finishedNodeList);
     tasks.forEach((item) => {
         let taskElemCopy = nodeTemplate.cloneNode(true);
-        taskElemCopy.querySelector('.btn-success').textContent = langObj[lang].complete;
-        taskElemCopy.querySelector('.btn-info').textContent = langObj[lang].edit;
-        taskElemCopy.querySelector('.btn-danger').textContent = langObj[lang].delete;
+        taskElemCopy.querySelector('.btn-success').textContent = langObj[settings.lang].complete;
+        taskElemCopy.querySelector('.btn-info').textContent = langObj[settings.lang].edit;
+        taskElemCopy.querySelector('.btn-danger').textContent = langObj[settings.lang].delete;
         taskElemCopy.classList.add(item.color);
         taskElemCopy.setAttribute('id', item.id);
         taskElemCopy.querySelector('.title').textContent = item.title;
         taskElemCopy.querySelector('.text').textContent = item.text;
         taskElemCopy.querySelector('.time').textContent = getTime(item.time);
-        taskElemCopy.querySelector('.priority').textContent = `${langObj[lang][item.priority.toLowerCase()]} ${langObj[lang].priority.toLowerCase()}`;
+        taskElemCopy.querySelector('.priority').textContent = `${langObj[settings.lang][item.priority.toLowerCase()]} ${langObj[settings.lang].priority.toLowerCase()}`;
         item.status === 'done' ? finishedNodeList.append(taskElemCopy) : unfinishedNodeList.append(taskElemCopy);
     });
     hideEditDeleteBtns (finishedNodeList);
-    countTasks (unfinishedHeader, finishedHeader, tasks, lang);
-    renderEnvironment (addTaskBtn, mainHeader, langDescr, logoutDescr, themeDescr, labelTitle, labelText, labelPriority, addTaskModalTitle, labelRadios, closeBtn, submitTaskBtn, editTaskBtn, lang);
+    countTasks (unfinishedHeader, finishedHeader, tasks);
+    renderEnvironment (addTaskBtn, mainHeader, langDescr, logoutDescr, themeDescr, labelTitle, labelText, labelPriority, addTaskModalTitle, labelRadios, closeBtn, submitTaskBtn, editTaskBtn);
 }
 
 function hideEditDeleteBtns (nodeList) {
@@ -65,12 +66,12 @@ function hideEditDeleteBtns (nodeList) {
     nodeList.querySelectorAll('.btn-info').forEach((item) => item.hidden = true);
 }
 
-function countTasks (unfinishedHeader, finishedHeader, tasks, lang) {
+function countTasks (unfinishedHeader, finishedHeader, tasks) {
     let unfinished = 0,
         finished = 0;
     tasks.forEach((item) => {item.status === 'done' ? finished++ : unfinished++;});
-    finishedHeader.textContent = `${langObj[lang].completed} (${finished})`;
-    unfinishedHeader.textContent = `${langObj[lang].todo} (${unfinished})`;
+    finishedHeader.textContent = `${langObj[settings.lang].completed} (${finished})`;
+    unfinishedHeader.textContent = `${langObj[settings.lang].todo} (${unfinished})`;
 }
 
 function getTime(timeStamp) {
@@ -131,12 +132,12 @@ export function checkPriority(radios) {
     }
 }
 
-export function clearForm(titleForm, textForm, radios, lang) {
+export function clearForm(titleForm, textForm, radios) {
     titleForm.value = '';
-    titleForm.setAttribute('placeholder', langObj[lang].title);
+    titleForm.setAttribute('placeholder', langObj[settings.lang].title);
     titleForm.style.borderColor = '#ced4da';
     textForm.value = '';
-    textForm.setAttribute('placeholder', langObj[lang].text);
+    textForm.setAttribute('placeholder', langObj[settings.lang].text);
     textForm.style.borderColor = '#ced4da';
     for (let radio of radios) {
         radio.checked = false;
@@ -150,14 +151,14 @@ export function checkInputs (titleForm, textForm) {
     return false;
 }
 
-export function inputsColorizer (elem, lang, langObjkey) {
+export function inputsColorizer (elem, langObjkey) {
     if (!elem.value) {
         elem.style.borderColor = '#FF0000';
-        elem.setAttribute('placeholder', langObj[lang].inputErrMsg);
+        elem.setAttribute('placeholder', langObj[settings.lang].inputErrMsg);
     } else {
         elem.style.borderColor = '#ced4da';
-        elem.setAttribute('placeholder', langObj[lang][langObjkey]);
-        console.log(langObj[lang][langObjkey]);
+        elem.setAttribute('placeholder', langObj[settings.lang][langObjkey]);
+        console.log(langObj[settings.lang][langObjkey]);
     }
 }
 
