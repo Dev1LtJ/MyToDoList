@@ -24,7 +24,7 @@ import {settings} from './script.js';
 
 function renderEnvironment (addTaskBtn, mainHeader, langDescr, logoutDescr, themeDescr, labelTitle, labelText, labelPriority, addTaskModalTitle, labelRadios, closeBtn, submitTaskBtn, editTaskBtn) {
     addTaskBtn.textContent = langObj[settings.lang].addtask;
-    mainHeader.textContent = `${langObj[settings.lang].todolist} ${currentUser.name} ${currentUser.surname}`;
+    mainHeader.textContent = `${langObj[settings.lang].hello}, ${currentUser.name} ${currentUser.surname}`;
     langDescr.textContent = langObj[settings.lang].language;
     logoutDescr.textContent = langObj[settings.lang].logout;
     themeDescr.textContent = langObj[settings.lang].theme;
@@ -175,7 +175,7 @@ const langObj = {
         language: 'Язык',
         todo: 'В работе',
         completed: 'Выполнено',
-        todolist: 'Список задач',
+        hello: 'Привет',
         title: 'Заголовок',
         text: 'Текст',
         close: 'Закрыть',
@@ -196,7 +196,7 @@ const langObj = {
         language: 'Language',
         todo: 'ToDo',
         completed: 'Completed',
-        todolist: 'ToDoList',
+        hello: 'Hello',
         title: 'Title',
         text: 'Text',
         close: 'Close',

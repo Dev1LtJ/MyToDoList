@@ -1,0 +1,76 @@
+.auth-form {
+    position: relative;
+    margin: 0 auto;
+    width: 350px;
+    min-height: 490px;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+    &__header {
+        border-radius: 10px 10px 0 0;
+        padding-top: 25px;
+        background-color: $header-color;
+        height: 170px;
+    }
+    &__logo {
+        margin: 0 auto;
+        display: block;
+        height: 80px;
+    }
+    &__title {
+        margin-top: 10px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 30px;
+    }
+    &__body {
+        padding: 0 25px;
+    }
+    &__input {
+        margin-top: 20px;
+        input {
+            margin-top: 5px;
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid $border-color;
+            border-radius: 10px;
+            &:focus {
+                outline: none;
+                border-color: $black-color;
+            }
+        }
+    }
+    &__signin, &__signup {
+        border-radius: 10px;
+        color: $white-color;
+        margin-top: 25px;
+        background-color: $lightgreen-color;
+        box-shadow: none;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        font-weight: 400;
+        letter-spacing: 1.1px;
+        text-transform: uppercase;
+        cursor: pointer;
+        &:focus {
+            outline: none;
+        }
+        &:active {
+            background-color: $darkgreen-color;
+        }
+    }
+    &__signup {
+        margin-bottom: 25px;
+        margin-top: 10px;
+        background-color: $lightblue-color;
+        &:active {
+            background-color: $darkblue-color;
+        }
+    }
+    &__password-check, &__email-check {
+        margin-top: 5px;
+        display: block;
+        font-size: 11px;
+    }
+}

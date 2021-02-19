@@ -18,6 +18,7 @@ const
 import {setToLocalStorage,
     getFromLocalStorage} from '../MyToDoList/js/localStorage.js';
 import {lang__btn, lang__img, moveToggle} from './lang.js';
+import {theme__btn, theme__img} from './theme.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     users = getFromLocalStorage('users') ?
@@ -28,6 +29,7 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         settings = {
             lang: 'EN',
+            theme: 'light',
         };
         setToLocalStorage(settings, 'settings');
     }
