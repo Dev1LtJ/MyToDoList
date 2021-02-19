@@ -2,8 +2,8 @@ let form__header = document.querySelector('.auth-form__header'),
     lang = document.createElement('div'),
     lang__btn = document.createElement('div'),
     lang__img = document.createElement('img');
-export {lang__btn};
-//import {settings} from './script.js'
+export {lang__btn, lang__img};
+import {settings} from './script.js';
 
 lang__img.classList.add('auth-form__lang__img');
 
@@ -26,7 +26,7 @@ lang__btn.addEventListener('click', (event) => {
     }
 });
 
-function moveToggle(element, value) {
+export function moveToggle(element, value) {
     let left = null;
     value ? left = 0 : left = 22;
     if (value) {

@@ -23,11 +23,14 @@ document.addEventListener('DOMContentLoaded', () => {
     users = getFromLocalStorage('users') ?
         users = getFromLocalStorage('users') :
         users = [];
-    settings = getFromLocalStorage('settings') ?
-        settings = getFromLocalStorage('settings') :
+    if (getFromLocalStorage('settings')) {
+        settings = getFromLocalStorage('settings');
+    } else {
         settings = {
             lang: 'EN',
-        }
+        };
+        setToLocalStorage(settings, 'settings');
+    }
     renderDOM (emailCheck, passwordCheck, password, submitButton, title, labelEmail, labelPassword, signupBtn);
     lang__btn.addEventListener('click', ()=> {
         settings.lang === 'RU' ? settings.lang = 'EN' : settings.lang = 'RU';
