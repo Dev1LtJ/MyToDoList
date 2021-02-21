@@ -8,12 +8,8 @@ let emailCheck = document.querySelector('.auth-form__email-check'),
     labelEmail = document.querySelector('label[for="email"'),
     labelPassword = document.querySelector('label[for="password"'),
     signupBtn = document.querySelector('.auth-form__signup');
-//vatiables, constants
 let users = [],
     settings = {};
-const
-    COLOR_INCORRECT = '#fd1000',
-    COLOR_DEFAULT = '#000';
 
 import {setToLocalStorage,
     getFromLocalStorage} from '../MyToDoList/js/localStorage.js';
@@ -39,7 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
         setToLocalStorage(settings, 'settings');
         renderDOM (emailCheck, passwordCheck, password, submitButton, title, labelEmail, labelPassword, signupBtn);
     });
+    theme__btn.addEventListener('click', ()=> {
+        settings.theme === 'light' ? settings.theme = 'dark' : settings.theme = 'light';
+        setToLocalStorage(settings, 'settings');
+        renderDOM (emailCheck, passwordCheck, password, submitButton, title, labelEmail, labelPassword, signupBtn);
+    });
 });
+
 export {settings};
 
 submitButton.addEventListener('click', (event)=> {
@@ -54,28 +56,28 @@ function checkEmail (email, users) {
     let currentUser = users.find((item) => item.email === email);
     if (currentUser) return currentUser;
     emailCheck.textContent = langObj[settings.lang].emailErrMsg;
-    emailCheck.style.color = COLOR_INCORRECT;
+    emailCheck.style.color = themeObj[settings.theme].incorrect;
     return false;
 }
 
 function checkPassword (password, currentUser) {
     if (currentUser.password === password) return true;
     passwordCheck.textContent = langObj[settings.lang].passwordErrMsg;
-    passwordCheck.style.color = COLOR_INCORRECT;
+    passwordCheck.style.color = themeObj[settings.theme].incorrect;
     return false;
 }
 
 email.addEventListener('input', () => {
     emailCheck.textContent = langObj[settings.lang].emailchecker;
-    emailCheck.style.color = COLOR_DEFAULT;
+    emailCheck.style.color = themeObj[settings.theme].default;
 });
 
 password.addEventListener('input', () => {
     passwordCheck.textContent = langObj[settings.lang].passwordchecker;
-    passwordCheck.style.color = COLOR_DEFAULT;
+    passwordCheck.style.color = themeObj[settings.theme].default;
 });
 
-function renderDOM (emailCheck, passwordCheck, password, submitButton, title, labelEmail, labelPassword, signupBtn, ) {
+function renderDOM (emailCheck, passwordCheck, password, submitButton, title, labelEmail, labelPassword, signupBtn) {
     emailCheck.textContent = langObj[settings.lang].emailchecker;
     passwordCheck.textContent = langObj[settings.lang].passwordchecker;
     password.placeholder = langObj[settings.lang].inputpassword;
@@ -90,6 +92,28 @@ function renderDOM (emailCheck, passwordCheck, password, submitButton, title, la
     } else {
         lang__img.setAttribute('src', 'MyToDoList/icons/ru.svg');
         moveToggle(lang__img, true);
+    }
+    if (settings.theme === 'light') {
+        document.body.classList.remove('darktheme');
+        theme__img.setAttribute('src', 'MyToDoList/icons/sun.svg');
+        moveToggle(theme__img, false);
+    } else {
+        document.body.classList.add('darktheme');
+        theme__img.setAttribute('src', 'MyToDoList/icons/moon.svg');
+        moveToggle(theme__img, true);
+    }
+    password.dispatchEvent(new Event ('input', {bubbles : true}));
+    email.dispatchEvent(new Event ('input', {bubbles : true}));
+}
+
+const themeObj = {
+    light: {
+        default: '#000',
+        incorrect: '#fd1000'
+    },
+    dark: {
+        default: '#fff',
+        incorrect: '#fd1000'
     }
 }
 

@@ -1,0 +1,108 @@
+.auth-form {
+    position: relative;
+    margin: 0 auto;
+    width: 700px;
+    min-height: 490px;
+    border: 1px solid $border-color;
+    border-radius: 10px;
+    &__wrapper {
+        display: flex;
+        justify-content: space-between;
+    }
+    &__column {
+        width: 45%;
+    }
+    &__header {
+        border-radius: 10px 10px 0 0;
+        padding-top: 25px;
+        background-color: $header-color;
+        height: 170px;
+    }
+    &__logo {
+        margin: 0 auto;
+        display: block;
+        height: 80px;
+    }
+    &__title {
+        margin-top: 10px;
+        text-align: center;
+        font-weight: 600;
+        font-size: 30px;
+    }
+    &__body {
+        padding: 0 25px;
+    }
+    &__input {
+        margin-top: 20px;
+        input {
+            margin-top: 5px;
+            display: block;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid $border-color;
+            border-radius: 10px;
+            &:focus {
+                outline: none;
+                border-color: $black-color;
+            }
+        }
+    }
+    &__signup, &__back {
+        border-radius: 10px;
+        color: $white-color;
+        background-color: $lightgreen-color;
+        box-shadow: none;
+        width: 100%;
+        padding: 10px;
+        border: none;
+        font-weight: 400;
+        letter-spacing: 1.1px;
+        text-transform: uppercase;
+        cursor: pointer;
+        &:focus {
+            outline: none;
+        }
+        &:active {
+            background-color: $darkgreen-color;
+        }
+    }
+    &__back {
+        background-color: $lightblue-color;
+        &:active {
+            background-color: $darkblue-color;
+        }
+    }
+    &__divider {
+        margin: 0 auto;
+        margin-top: 5px;
+        background-color: $border-color;
+        height: 2px;
+        width: 98%;
+    }
+    &__password-check, &__login-check, &__email-check {
+        margin-top: 5px;
+        display: block;
+        font-size: 11px;
+    }
+    &__btn-wrapper {
+        padding-bottom: 2px;
+        padding-right: 2px;
+        border-right: 1px solid;
+        border-radius: 10px;
+        border-bottom: 1px solid;
+        border-color: rgba(48, 112, 240, 0);
+        margin-bottom: 25px;
+        margin-top: 40px;
+        &_small {
+            margin-top: 13px;
+            border-right: 1px solid;
+            border-bottom: 1px solid;
+            border-color: rgba(88, 134, 27, 0);
+        }
+        a {
+            &:focus {
+                outline: none;
+            }
+        }
+    }
+}

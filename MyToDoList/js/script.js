@@ -32,7 +32,7 @@ import {deleteTask,
         inputsColorizer} from './DOM.js';
 import {setToLocalStorage,
         getFromLocalStorage} from './localStorage.js';
-import {toggle__btn, moveToggle} from './theme-toggler.js';
+import {toggle__btn, toggle__img, moveToggle} from './theme-toggler.js';
 import {lang__btn, lang__img} from './lang.js';
 
 //initial properties
@@ -66,6 +66,21 @@ document.addEventListener('DOMContentLoaded', () => {
     } else {
         lang__img.setAttribute('src', 'icons/ru.svg');
         moveToggle(lang__img, true);
+    }
+
+    toggle__btn.addEventListener('click', ()=> {
+        settings.theme === 'light' ? settings.theme = 'dark' : settings.theme = 'light';
+        setToLocalStorage(settings, 'settings');
+        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
+    });
+    if (settings.theme === 'light') {
+        document.body.classList.remove('darktheme');
+        toggle__img.setAttribute('src', 'icons/sun.svg');
+        moveToggle(toggle__img, false);
+    } else {
+        document.body.classList.add('darktheme');
+        toggle__img.setAttribute('src', 'icons/moon.svg');
+        moveToggle(toggle__img, true);
     }
 });
 export {settings};

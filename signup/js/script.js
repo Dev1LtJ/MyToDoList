@@ -25,14 +25,12 @@ const
     COLOR_GREEN_VISIBLE = 'rgba(48, 112, 240, 1)',
     COLOR_GREEN_INVISIBLE = 'rgba(48, 112, 240, 0)',
     COLOR_BLUE_VISIBLE = 'rgba(88, 134, 27, 1)',
-    COLOR_BLUE_INVISIBLE = 'rgba(88, 134, 27, 0)',
-    COLOR_INCORRECT = '#fd1000',
-    COLOR_CORRENT = '#7dbf26',
-    COLOR_DEFAULT = '#000';
+    COLOR_BLUE_INVISIBLE = 'rgba(88, 134, 27, 0)';
 
 import {setToLocalStorage,
         getFromLocalStorage} from '../../MyToDoList/js/localStorage.js';
 import {lang__btn, lang__img, moveToggle} from './lang.js';
+import {theme__btn, theme__img} from './theme.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     users = getFromLocalStorage('users') ?
@@ -42,6 +40,11 @@ document.addEventListener('DOMContentLoaded', () => {
     renderDOM (emailCheck, passwordCheck, password, submitButton, title, username, labelEmail, labelPassword, backButton, labelSurname, surname, login, labelLogin, repeatedPassword, labelRepeatedPassword, loginCheck);
     lang__btn.addEventListener('click', ()=> {
         settings.lang === 'RU' ? settings.lang = 'EN' : settings.lang = 'RU';
+        setToLocalStorage(settings, 'settings');
+        renderDOM (emailCheck, passwordCheck, password, submitButton, title, username, labelEmail, labelPassword, backButton, labelSurname, surname, login, labelLogin, repeatedPassword, labelRepeatedPassword, loginCheck);
+    });
+    theme__btn.addEventListener('click', ()=> {
+        settings.theme === 'light' ? settings.theme = 'dark' : settings.theme = 'light';
         setToLocalStorage(settings, 'settings');
         renderDOM (emailCheck, passwordCheck, password, submitButton, title, username, labelEmail, labelPassword, backButton, labelSurname, surname, login, labelLogin, repeatedPassword, labelRepeatedPassword, loginCheck);
     });
@@ -96,11 +99,11 @@ function checkPassword (baseElement, trackingElement) {
     if (baseElement.value != trackingElement.value) {
         passwordBar.style.backgroundColor = '#fd1000';
         passwordCheck.textContent = langObj[settings.lang].passwordCheckErrMsg;
-        passwordCheck.style.color = COLOR_INCORRECT;
+        passwordCheck.style.color = themeObj[settings.theme].incorrect;
     } else {
         passwordBar.style.backgroundColor = '#7dbf26';
         passwordCheck.textContent = langObj[settings.lang].passwordCheckGood;
-        passwordCheck.style.color = COLOR_CORRENT;
+        passwordCheck.style.color = themeObj[settings.theme].correct;
     }
 }
 
@@ -108,7 +111,7 @@ function checkLogin (value) {
     for (let user of users) {
         if(user.login === value) {
             loginCheck.textContent = langObj[settings.lang].loginMatchErrMsg;
-            loginCheck.style.color = COLOR_INCORRECT;
+            loginCheck.style.color = themeObj[settings.theme].incorrect;
             return false;
         }
     }
@@ -117,7 +120,7 @@ function checkLogin (value) {
 
 login.addEventListener('input', () => {
     loginCheck.textContent = langObj[settings.lang].loginChecker;
-    loginCheck.style.color = COLOR_DEFAULT;
+    loginCheck.style.color = themeObj[settings.theme].default;
 });
 
 function checkEmail (value) {
@@ -132,7 +135,7 @@ function checkEmail (value) {
     }
     if (counter != 1) {
         emailCheck.textContent = langObj[settings.lang].emailErrMsg;
-        emailCheck.style.color = COLOR_INCORRECT;
+        emailCheck.style.color = themeObj[settings.theme].incorrect;
         return false;
     }
     let dog = newPos;
@@ -145,13 +148,13 @@ function checkEmail (value) {
     }
     if (counter != 1 || ++dog === newPos) {
         emailCheck.textContent = langObj[settings.lang].emailErrMsg;
-        emailCheck.style.color = COLOR_INCORRECT;
+        emailCheck.style.color = themeObj[settings.theme].incorrect;
         return false;
     }
     for (let user of users) {
         if(user.email === value) {
             emailCheck.textContent = langObj[settings.lang].emailMatchErrMsg;
-            emailCheck.style.color = COLOR_INCORRECT;
+            emailCheck.style.color = themeObj[settings.theme].incorrect;
             return false;
         }
     }
@@ -160,7 +163,7 @@ function checkEmail (value) {
 
 email.addEventListener('input', () => {
     emailCheck.textContent = langObj[settings.lang].emailChecker;
-    emailCheck.style.color = COLOR_DEFAULT;
+    emailCheck.style.color = themeObj[settings.theme].default;
 });
 
 function renderDOM (emailCheck, passwordCheck, password, submitButton, title, username, labelEmail, labelPassword, backButton, labelSurname, surname, login, labelLogin, repeatedPassword, labelRepeatedPassword, loginCheck) {
@@ -187,6 +190,30 @@ function renderDOM (emailCheck, passwordCheck, password, submitButton, title, us
     } else {
         lang__img.setAttribute('src', '../MyToDoList/icons/ru.svg');
         moveToggle(lang__img, true);
+    }
+    if (settings.theme === 'light') {
+        document.body.classList.remove('darktheme');
+        theme__img.setAttribute('src', '../MyToDoList/icons/sun.svg');
+        moveToggle(theme__img, false);
+    } else {
+        document.body.classList.add('darktheme');
+        theme__img.setAttribute('src', '../MyToDoList/icons/moon.svg');
+        moveToggle(theme__img, true);
+    }
+    login.dispatchEvent(new Event ('input', {bubbles : true}));
+    email.dispatchEvent(new Event ('input', {bubbles : true}));
+}
+
+const themeObj = {
+    light: {
+        default: '#000',
+        incorrect: '#fd1000',
+        correct: '#7dbf26'
+    },
+    dark: {
+        default: '#fff',
+        incorrect: '#fd1000',
+        correct: '#7dbf26'
     }
 }
 

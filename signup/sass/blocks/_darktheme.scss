@@ -1,0 +1,45 @@
+.darktheme {
+    .container {
+        background-color: $dark-color;
+        .auth-form {
+            background-color: $second-color;
+            border-color: $theme-color;
+            &__header {
+                background-color: $theme-color;
+            }
+            &__input {
+                input {
+                    border-color: $theme-color;
+                    &:focus {
+                        border-color: $border-color;
+                    }
+                }
+            }
+            label[for="email"],
+            label[for="password"],
+            label[for="repeatedPassword"],
+            label[for="login"],
+            label[for="surname"],
+            label[for="name"] {
+                color: $white-color;
+            }
+            &__email-check,
+            &__password-check,
+            &__login-check {
+                color: $white-color;
+            }
+            &__lang {
+                &__btn {
+                    background-color: $darklight-color;
+                    border-color: $darklight-color;
+                }
+            }
+            &__theme {
+                &__btn {
+                    background-color: $darklight-color;
+                    border-color: $darklight-color;
+                }
+            }
+        }
+    }
+}

@@ -1,4 +1,3 @@
-//toggle theme
 let body = document.body,
     form__header = document.querySelector('.auth-form__header'),
     theme = document.createElement('div'),
@@ -23,10 +22,10 @@ theme__btn.addEventListener('click', (event) => {
     event.stopPropagation();
     body.classList.toggle('darktheme');
     if (settings.theme === 'light') {
-        theme__img.setAttribute('src', 'MyToDoList/icons/moon.svg');
+        theme__img.setAttribute('src', '../MyToDoList/icons/moon.svg');
         moveToggle(theme__img, true);
     } else {
-        theme__img.setAttribute('src', 'MyToDoList/icons/sun.svg');
+        theme__img.setAttribute('src', '../MyToDoList/icons/sun.svg');
         moveToggle(theme__img, false);
     }
 });

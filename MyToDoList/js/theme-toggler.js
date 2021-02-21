@@ -5,7 +5,7 @@ let body = document.body,
     toggle__btn = document.createElement('div'),
     toggle__descr = document.createElement('div'),
     toggle__img = document.createElement('img');
-    export {toggle__btn};
+    export {toggle__btn, toggle__img};
     export {toggle__descr};
 //toggler creation
 settings.innerHTML = ('');
