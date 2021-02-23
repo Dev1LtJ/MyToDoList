@@ -15,6 +15,8 @@ import {setToLocalStorage,
     getFromLocalStorage} from '../MyToDoList/js/localStorage.js';
 import {lang__btn, lang__img, moveToggle} from './lang.js';
 import {theme__btn, theme__img} from './theme.js';
+import {langObj} from '../MyToDoList/js/langObj.js';
+import {themeObj} from './themeObj.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     users = getFromLocalStorage('users') ?
@@ -68,19 +70,19 @@ function checkPassword (password, currentUser) {
 }
 
 email.addEventListener('input', () => {
-    emailCheck.textContent = langObj[settings.lang].emailchecker;
+    emailCheck.textContent = langObj[settings.lang].emailChecker;
     emailCheck.style.color = themeObj[settings.theme].default;
 });
 
 password.addEventListener('input', () => {
-    passwordCheck.textContent = langObj[settings.lang].passwordchecker;
+    passwordCheck.textContent = langObj[settings.lang].passwordChecker;
     passwordCheck.style.color = themeObj[settings.theme].default;
 });
 
 function renderDOM (emailCheck, passwordCheck, password, submitButton, title, labelEmail, labelPassword, signupBtn) {
-    emailCheck.textContent = langObj[settings.lang].emailchecker;
-    passwordCheck.textContent = langObj[settings.lang].passwordchecker;
-    password.placeholder = langObj[settings.lang].inputpassword;
+    emailCheck.textContent = langObj[settings.lang].emailChecker;
+    passwordCheck.textContent = langObj[settings.lang].passwordChecker;
+    password.placeholder = langObj[settings.lang].inputPassword;
     submitButton.textContent = langObj[settings.lang].signin;
     title.textContent = langObj[settings.lang].enter;
     labelEmail.textContent = langObj[settings.lang].email;
@@ -105,41 +107,3 @@ function renderDOM (emailCheck, passwordCheck, password, submitButton, title, la
     password.dispatchEvent(new Event ('input', {bubbles : true}));
     email.dispatchEvent(new Event ('input', {bubbles : true}));
 }
-
-const themeObj = {
-    light: {
-        default: '#000',
-        incorrect: '#fd1000'
-    },
-    dark: {
-        default: '#fff',
-        incorrect: '#fd1000'
-    }
-}
-
-const langObj = {
-    RU: {
-        email: 'Электронная почта',
-        password: 'Пароль',
-        inputpassword: 'Введите ваш пароль',
-        enter: 'Войти в список задач',
-        emailchecker: 'Проверка правильности эл. почты',
-        passwordchecker: 'Проверка правильности пароля',
-        signin: 'Войти',
-        signup: 'Зарегистрироваться',
-        emailErrMsg: 'Пользователь с таким адресом не найден',
-        passwordErrMsg: 'Неправильный пароль',
-    },
-    EN: {
-        email: 'Email',
-        password: 'Password',
-        inputpassword: 'Enter your password',
-        enter: 'Enter ToDoList',
-        emailchecker: 'Email correct checker',
-        passwordchecker: 'Password correct checker',
-        signin: 'Sign in',
-        signup: 'Sign up',
-        emailErrMsg: 'User with this email was not found',
-        passwordErrMsg: 'Incorrect password',
-    }
-};

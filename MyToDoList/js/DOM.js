@@ -21,6 +21,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 import {currentUser} from './script.js';
 import {settings} from './script.js';
+import {langObj} from './langObj.js';
 
 function renderEnvironment (addTaskBtn, mainHeader, langDescr, logoutDescr, themeDescr, labelTitle, labelText, labelPriority, addTaskModalTitle, labelRadios, closeBtn, submitTaskBtn, editTaskBtn) {
     addTaskBtn.textContent = langObj[settings.lang].addtask;
@@ -161,48 +162,3 @@ export function inputsColorizer (elem, langObjkey) {
         console.log(langObj[settings.lang][langObjkey]);
     }
 }
-
-const langObj = {
-    RU: {
-        priority: 'Приоритет',
-        low: 'Низкий',
-        medium: 'Средний',
-        high: 'Высокий',
-        addtask: 'Добавить',
-        edittask: 'Изменить',
-        theme: 'Тема',
-        logout: 'Выйти',
-        language: 'Язык',
-        todo: 'В работе',
-        completed: 'Выполнено',
-        hello: 'Привет',
-        title: 'Заголовок',
-        text: 'Текст',
-        close: 'Закрыть',
-        edit: 'Изменить',
-        complete: 'Выполнить',
-        delete: 'Удалить',
-        inputErrMsg: 'Это поле обязательно для заполнения'
-    },
-    EN: {
-        priority: 'Priority',
-        low: 'Low',
-        medium: 'Medium',
-        high: 'High',
-        addtask: 'Add task',
-        edittask: 'Edit task',
-        theme: 'Theme',
-        logout: 'Logout',
-        language: 'Language',
-        todo: 'ToDo',
-        completed: 'Completed',
-        hello: 'Hello',
-        title: 'Title',
-        text: 'Text',
-        close: 'Close',
-        edit: 'Edit',
-        complete: 'Complete',
-        delete: 'Delete',
-        inputErrMsg: 'This field is required'
-    }
-};

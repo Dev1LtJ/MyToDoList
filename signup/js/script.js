@@ -31,6 +31,8 @@ import {setToLocalStorage,
         getFromLocalStorage} from '../../MyToDoList/js/localStorage.js';
 import {lang__btn, lang__img, moveToggle} from './lang.js';
 import {theme__btn, theme__img} from './theme.js';
+import {langObj} from '../../MyToDoList/js/langObj.js';
+import {themeObj} from '../../js/themeObj.js';
 
 document.addEventListener('DOMContentLoaded', () => {
     users = getFromLocalStorage('users') ?
@@ -134,7 +136,7 @@ function checkEmail (value) {
         newPos = foundPos + 1;
     }
     if (counter != 1) {
-        emailCheck.textContent = langObj[settings.lang].emailErrMsg;
+        emailCheck.textContent = langObj[settings.lang].emailIncErrMsg;
         emailCheck.style.color = themeObj[settings.theme].incorrect;
         return false;
     }
@@ -147,7 +149,7 @@ function checkEmail (value) {
         newPos = foundPos + 1;
     }
     if (counter != 1 || ++dog === newPos) {
-        emailCheck.textContent = langObj[settings.lang].emailErrMsg;
+        emailCheck.textContent = langObj[settings.lang].emailIncErrMsg;
         emailCheck.style.color = themeObj[settings.theme].incorrect;
         return false;
     }
@@ -176,7 +178,7 @@ function renderDOM (emailCheck, passwordCheck, password, submitButton, title, us
     login.placeholder = langObj[settings.lang].inputLogin;
     repeatedPassword.placeholder = langObj[settings.lang].inputRepeatedPassword;
     submitButton.textContent = langObj[settings.lang].signup;
-    title.textContent = langObj[settings.lang].enter;
+    title.textContent = langObj[settings.lang].signUpToDo;
     labelName.textContent = langObj[settings.lang].name;
     labelEmail.textContent = langObj[settings.lang].email;
     labelPassword.textContent = langObj[settings.lang].password;
@@ -203,67 +205,3 @@ function renderDOM (emailCheck, passwordCheck, password, submitButton, title, us
     login.dispatchEvent(new Event ('input', {bubbles : true}));
     email.dispatchEvent(new Event ('input', {bubbles : true}));
 }
-
-const themeObj = {
-    light: {
-        default: '#000',
-        incorrect: '#fd1000',
-        correct: '#7dbf26'
-    },
-    dark: {
-        default: '#fff',
-        incorrect: '#fd1000',
-        correct: '#7dbf26'
-    }
-}
-
-const langObj = {
-    RU: {
-        name: 'Имя',
-        inputName: 'Введите ваше имя',
-        surname: 'Фамилия',
-        inputSurname: 'Введите вашу фамилию',
-        login: 'Логин',
-        inputLogin: 'Введите ваш логин',
-        email: 'Электронная почта',
-        password: 'Пароль',
-        inputPassword: 'Введите ваш пароль',
-        repeatedPassword: 'Повторите пароль',
-        inputRepeatedPassword: 'Повторите ваш пароль',
-        enter: 'Зарегистрироваться в списке задач',
-        emailChecker: 'Проверка правильности эл. почты',
-        passwordChecker: 'Проверка правильности пароля',
-        loginChecker: 'Проверка правильности логина',
-        back: 'Назад',
-        signup: 'Зарегистрироваться',
-        loginMatchErrMsg: 'Пользователь с таким логином уже зарегистрирован',
-        emailMatchErrMsg: 'Пользователь с таким адресом уже зарегистрирован',
-        emailErrMsg: 'Введен некорректный адрес',
-        passwordCheckGood: 'Пароли совпадают',
-        passwordCheckErrMsg: 'Пароли не совпадают',
-    },
-    EN: {
-        name: 'Name',
-        inputName: 'Enter your name',
-        surname: 'Second name',
-        inputSurname: 'Enter your second name',
-        login: 'Login',
-        inputLogin: 'Enter your login',
-        email: 'Email',
-        password: 'Password',
-        inputPassword: 'Enter your password',
-        repeatedPassword: 'Repeat password',
-        inputRepeatedPassword: 'Repeat your password',
-        enter: 'Sign up ToDoList',
-        emailChecker: 'Email correct checker',
-        passwordChecker: 'Password correct checker',
-        loginChecker: 'Login correct checker',
-        back: 'Back',
-        signup: 'Sign up',
-        loginMatchErrMsg: 'User with this login is already registered',
-        emailMatchErrMsg: 'User with this email is already registered',
-        emailErrMsg: 'Email entered is incorrect',
-        passwordCheckGood: 'Passwords match',
-        passwordCheckErrMsg: 'Passwords do not match',
-    }
-};
