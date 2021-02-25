@@ -212,5 +212,5 @@ document.addEventListener('dragover', (event)=> {
             dragElement.classList.remove('selected');
             return;
         }
-    });
+    }, {once: true});
 });
