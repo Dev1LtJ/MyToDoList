@@ -53,6 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
         users[currentUserIndex].tasks.forEach((item) => {
             item.status === 'done' ? item.color = completeColor(item) : item.color = getPriorityTheme(item.priority);
         });
+        setToLocalStorage(users, 'users');
         renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
     });
 
@@ -108,7 +109,6 @@ submitTaskBtn.addEventListener('click', function addTask(event) {
     closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
     setToLocalStorage(users, 'users');
     renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
-    clearForm(titleForm, textForm, radios);
 });
 
 taskList.addEventListener('click', (event) => {
