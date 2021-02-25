@@ -1,6 +1,7 @@
 //elements
 let passwordBar = document.querySelector('.auth-form__divider'),
-    passwordCheck = document.querySelector('.auth-form__password-check'),
+    passwordCorrectCheck = document.querySelector('.auth-form__password-check'),
+    passwordMatchingCheck = document.querySelector('.auth-form__repeatedPassword-check'),
     loginCheck = document.querySelector('.auth-form__login-check'),
     emailCheck = document.querySelector('.auth-form__email-check'),
     username = document.getElementById('name'),
@@ -39,20 +40,28 @@ document.addEventListener('DOMContentLoaded', () => {
         users = getFromLocalStorage('users') :
         users = [];
     settings = getFromLocalStorage('settings');
-    renderDOM (emailCheck, passwordCheck, password, submitButton, title, username, labelEmail, labelPassword, backButton, labelSurname, surname, login, labelLogin, repeatedPassword, labelRepeatedPassword, loginCheck);
+    renderDOM (password, submitButton, title, username, labelEmail, labelPassword, backButton, labelSurname, surname, login, labelLogin, repeatedPassword, labelRepeatedPassword);
     lang__btn.addEventListener('click', ()=> {
         settings.lang === 'RU' ? settings.lang = 'EN' : settings.lang = 'RU';
         setToLocalStorage(settings, 'settings');
-        renderDOM (emailCheck, passwordCheck, password, submitButton, title, username, labelEmail, labelPassword, backButton, labelSurname, surname, login, labelLogin, repeatedPassword, labelRepeatedPassword, loginCheck);
+        renderDOM (password, submitButton, title, username, labelEmail, labelPassword, backButton, labelSurname, surname, login, labelLogin, repeatedPassword, labelRepeatedPassword);
+        clearCheckers (passwordCorrectCheck, passwordMatchingCheck, loginCheck, emailCheck, passwordBar);
     });
     theme__btn.addEventListener('click', ()=> {
         settings.theme === 'light' ? settings.theme = 'dark' : settings.theme = 'light';
         setToLocalStorage(settings, 'settings');
-        renderDOM (emailCheck, passwordCheck, password, submitButton, title, username, labelEmail, labelPassword, backButton, labelSurname, surname, login, labelLogin, repeatedPassword, labelRepeatedPassword, loginCheck);
+        renderDOM (password, submitButton, title, username, labelEmail, labelPassword, backButton, labelSurname, surname, login, labelLogin, repeatedPassword, labelRepeatedPassword);
     });
 });
 
 export {settings};
+
+function clearCheckers (...checkers) {
+    checkers.forEach((item) => {
+        item.textContent = '';
+        item.style.backgroundColor = '';
+    });
+}
 
 class User {
     constructor(name) {
@@ -69,7 +78,9 @@ submitButton.addEventListener('click', (event)=> {
     event.preventDefault();
     if (!checkLogin(login.value.toLowerCase()) ||
         !checkEmail(email.value.toLowerCase()) ||
-        password.value != repeatedPassword.value) return false;
+        !checkPassword (password.value) ||
+        !checkRepeatedPassword(repeatedPassword, password)) return false;
+    console.log('kek');
     let newUser = new User(username.value);
     users.push(newUser);
     setToLocalStorage(users, 'users');
@@ -78,38 +89,47 @@ submitButton.addEventListener('click', (event)=> {
 });
 
 backButton.addEventListener('mouseover', (event)=> {
-    event.target.closest('.auth-form__btn-wrapper').style.borderColor = COLOR_GREEN_VISIBLE;
+    event.target.closest('.auth-form__btn-wrapper_back').style.borderColor = COLOR_GREEN_VISIBLE;
 });
 backButton.addEventListener('mouseout', (event)=> {
-    event.target.closest('.auth-form__btn-wrapper').style.borderColor = COLOR_GREEN_INVISIBLE;
+    event.target.closest('.auth-form__btn-wrapper_back').style.borderColor = COLOR_GREEN_INVISIBLE;
 });
 submitButton.addEventListener('mouseover', (event)=> {
-    event.target.closest('.auth-form__btn-wrapper_small').style.borderColor = COLOR_BLUE_VISIBLE;
+    event.target.closest('.auth-form__btn-wrapper_signup').style.borderColor = COLOR_BLUE_VISIBLE;
 });
 submitButton.addEventListener('mouseout', (event)=> {
-    event.target.closest('.auth-form__btn-wrapper_small').style.borderColor = COLOR_BLUE_INVISIBLE;
+    event.target.closest('.auth-form__btn-wrapper_signup').style.borderColor = COLOR_BLUE_INVISIBLE;
 });
 
 repeatedPassword.addEventListener('input', (event) => {
-    setTimeout(() => checkPassword(event.target, password), 1500) 
+    setTimeout(() => checkRepeatedPassword(event.target, password), 1500) 
 });
-// password.addEventListener('input', (event) => {
-//     setTimeout(()=> checkPassword(event.target, repeatedPassword), 1000)
-// });
 
-function checkPassword (baseElement, trackingElement) {
-    if (baseElement.value != trackingElement.value) {
-        passwordBar.style.backgroundColor = '#fd1000';
-        passwordCheck.textContent = langObj[settings.lang].passwordCheckErrMsg;
-        passwordCheck.style.color = themeObj[settings.theme].incorrect;
+function checkRepeatedPassword (baseElement, trackingElement) {
+    if (!baseElement.value) {
+        passwordBar.style.backgroundColor = themeObj[settings.theme].incorrect;
+        passwordMatchingCheck.textContent = langObj[settings.lang].inputErrMsg;
+        passwordMatchingCheck.style.color = themeObj[settings.theme].incorrect;
+        return false;
+    } else if (baseElement.value != trackingElement.value) {
+        passwordBar.style.backgroundColor = themeObj[settings.theme].incorrect;
+        passwordMatchingCheck.textContent = langObj[settings.lang].passwordCheckErrMsg;
+        passwordMatchingCheck.style.color = themeObj[settings.theme].incorrect;
+        return false;
     } else {
-        passwordBar.style.backgroundColor = '#7dbf26';
-        passwordCheck.textContent = langObj[settings.lang].passwordCheckGood;
-        passwordCheck.style.color = themeObj[settings.theme].correct;
+        passwordBar.style.backgroundColor = themeObj[settings.theme].correct;
+        passwordMatchingCheck.textContent = langObj[settings.lang].passwordCheckGood;
+        passwordMatchingCheck.style.color = themeObj[settings.theme].correct;
+        return true;
     }
 }
 
 function checkLogin (value) {
+    if (!value) {
+        loginCheck.textContent = langObj[settings.lang].inputErrMsg;
+        loginCheck.style.color = themeObj[settings.theme].incorrect;
+        return false;
+    }
     for (let user of users) {
         if(user.login === value) {
             loginCheck.textContent = langObj[settings.lang].loginMatchErrMsg;
@@ -117,61 +137,62 @@ function checkLogin (value) {
             return false;
         }
     }
+    loginCheck.textContent = langObj[settings.lang].loginGood;
+    loginCheck.style.color = themeObj[settings.theme].correct;
     return true;
 }
 
 login.addEventListener('input', () => {
-    loginCheck.textContent = langObj[settings.lang].loginChecker;
-    loginCheck.style.color = themeObj[settings.theme].default;
+    setTimeout(() => checkLogin (login.value.toLowerCase()), 1500); 
+});
+
+function checkPassword (value) {
+    let regExp = /(?=.*[0-9])(?=.*[-_!@#$%^&*])(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z!@#$%^&*_-]{8,}/g;
+    if (!value) {
+        passwordCorrectCheck.textContent = langObj[settings.lang].inputErrMsg;
+        passwordCorrectCheck.style.color = themeObj[settings.theme].incorrect;
+        return false;
+    } else if (!regExp.test(value)) {
+        passwordCorrectCheck.textContent = langObj[settings.lang].passwordIncorrect;
+        passwordCorrectCheck.style.color = themeObj[settings.theme].incorrect;
+        return false;
+    } else {
+        passwordCorrectCheck.textContent = langObj[settings.lang].passwordCorrect;
+        passwordCorrectCheck.style.color = themeObj[settings.theme].correct;
+        return true;
+    }
+}
+
+password.addEventListener('input', () => {
+    setTimeout(() => checkPassword (password.value), 1500); 
 });
 
 function checkEmail (value) {
-    let counter = 0;
-    let newPos = 0;
-    let foundPos = 0;
-    while (true) {
-        foundPos = value.indexOf('@', newPos);
-        if (foundPos == -1) break;
-        counter++;
-        newPos = foundPos + 1;
-    }
-    if (counter != 1) {
+    let regExp = /[-.\w]+@([\w-]+\.)+[\w-]+/g;
+    if (!value) {
+        emailCheck.textContent = langObj[settings.lang].inputErrMsg;
+        emailCheck.style.color = themeObj[settings.theme].incorrect;
+        return false;
+    } else if (!regExp.test(value)) {
         emailCheck.textContent = langObj[settings.lang].emailIncErrMsg;
         emailCheck.style.color = themeObj[settings.theme].incorrect;
         return false;
-    }
-    let dog = newPos;
-    counter = 0;
-    while (true) {
-        foundPos = value.indexOf('.', newPos);
-        if (foundPos == -1) break;
-        counter++;
-        newPos = foundPos + 1;
-    }
-    if (counter != 1 || ++dog === newPos) {
-        emailCheck.textContent = langObj[settings.lang].emailIncErrMsg;
+    } else if (users.find((item) => item.email === value)) {
+        emailCheck.textContent = langObj[settings.lang].emailMatchErrMsg;
         emailCheck.style.color = themeObj[settings.theme].incorrect;
         return false;
+    } else {
+        emailCheck.textContent = langObj[settings.lang].emailGood;
+        emailCheck.style.color = themeObj[settings.theme].correct;
+        return true;
     }
-    for (let user of users) {
-        if(user.email === value) {
-            emailCheck.textContent = langObj[settings.lang].emailMatchErrMsg;
-            emailCheck.style.color = themeObj[settings.theme].incorrect;
-            return false;
-        }
-    }
-    return true;
 }
 
 email.addEventListener('input', () => {
-    emailCheck.textContent = langObj[settings.lang].emailChecker;
-    emailCheck.style.color = themeObj[settings.theme].default;
+    setTimeout(() => checkEmail (email.value.toLowerCase()), 1500); 
 });
 
-function renderDOM (emailCheck, passwordCheck, password, submitButton, title, username, labelEmail, labelPassword, backButton, labelSurname, surname, login, labelLogin, repeatedPassword, labelRepeatedPassword, loginCheck) {
-    emailCheck.textContent = langObj[settings.lang].emailChecker;
-    passwordCheck.textContent = langObj[settings.lang].passwordChecker;
-    loginCheck.textContent = langObj[settings.lang].loginChecker;
+function renderDOM (password, submitButton, title, username, labelEmail, labelPassword, backButton, labelSurname, surname, login, labelLogin, repeatedPassword, labelRepeatedPassword) {
     password.placeholder = langObj[settings.lang].inputPassword;
     username.placeholder = langObj[settings.lang].inputName;
     surname.placeholder = langObj[settings.lang].inputSurname;
@@ -202,6 +223,4 @@ function renderDOM (emailCheck, passwordCheck, password, submitButton, title, us
         theme__img.setAttribute('src', '../MyToDoList/icons/moon.svg');
         moveToggle(theme__img, true);
     }
-    login.dispatchEvent(new Event ('input', {bubbles : true}));
-    email.dispatchEvent(new Event ('input', {bubbles : true}));
 }

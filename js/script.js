@@ -31,16 +31,16 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         setToLocalStorage(settings, 'settings');
     }
-    renderDOM (emailCheck, passwordCheck, password, submitButton, title, labelEmail, labelPassword, signupBtn);
+    renderDOM (password, submitButton, title, labelEmail, labelPassword, signupBtn);
     lang__btn.addEventListener('click', ()=> {
         settings.lang === 'RU' ? settings.lang = 'EN' : settings.lang = 'RU';
         setToLocalStorage(settings, 'settings');
-        renderDOM (emailCheck, passwordCheck, password, submitButton, title, labelEmail, labelPassword, signupBtn);
+        renderDOM (password, submitButton, title, labelEmail, labelPassword, signupBtn);
     });
     theme__btn.addEventListener('click', ()=> {
         settings.theme === 'light' ? settings.theme = 'dark' : settings.theme = 'light';
         setToLocalStorage(settings, 'settings');
-        renderDOM (emailCheck, passwordCheck, password, submitButton, title, labelEmail, labelPassword, signupBtn);
+        renderDOM (password, submitButton, title, labelEmail, labelPassword, signupBtn);
     });
 });
 
@@ -55,33 +55,47 @@ submitButton.addEventListener('click', (event)=> {
 });
 
 function checkEmail (email, users) {
+    let regExp = /[-.\w]+@([\w-]+\.)+[\w-]+/g;
     let currentUser = users.find((item) => item.email === email);
     if (currentUser) return currentUser;
-    emailCheck.textContent = langObj[settings.lang].emailErrMsg;
-    emailCheck.style.color = themeObj[settings.theme].incorrect;
-    return false;
+    if (!email) {
+        emailCheck.textContent = langObj[settings.lang].inputErrMsg;
+        emailCheck.style.color = themeObj[settings.theme].incorrect;
+        return false;
+    } else if (!regExp.test(email)) {
+        emailCheck.textContent = langObj[settings.lang].emailIncErrMsg;
+        emailCheck.style.color = themeObj[settings.theme].incorrect;
+        return false;
+    } else {
+        emailCheck.textContent = langObj[settings.lang].emailErrMsg;
+        emailCheck.style.color = themeObj[settings.theme].incorrect;
+        return false;
+    }
 }
 
 function checkPassword (password, currentUser) {
     if (currentUser.password === password) return true;
+    if (!password) {
+        passwordCheck.textContent = langObj[settings.lang].inputErrMsg;
+        passwordCheck.style.color = themeObj[settings.theme].incorrect;
+        return false;
+    }
     passwordCheck.textContent = langObj[settings.lang].passwordErrMsg;
     passwordCheck.style.color = themeObj[settings.theme].incorrect;
     return false;
 }
 
 email.addEventListener('input', () => {
-    emailCheck.textContent = langObj[settings.lang].emailChecker;
+    emailCheck.textContent = '';
     emailCheck.style.color = themeObj[settings.theme].default;
 });
 
 password.addEventListener('input', () => {
-    passwordCheck.textContent = langObj[settings.lang].passwordChecker;
+    passwordCheck.textContent = '';
     passwordCheck.style.color = themeObj[settings.theme].default;
 });
 
-function renderDOM (emailCheck, passwordCheck, password, submitButton, title, labelEmail, labelPassword, signupBtn) {
-    emailCheck.textContent = langObj[settings.lang].emailChecker;
-    passwordCheck.textContent = langObj[settings.lang].passwordChecker;
+function renderDOM (password, submitButton, title, labelEmail, labelPassword, signupBtn) {
     password.placeholder = langObj[settings.lang].inputPassword;
     submitButton.textContent = langObj[settings.lang].signin;
     title.textContent = langObj[settings.lang].enter;

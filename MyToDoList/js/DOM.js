@@ -159,6 +159,5 @@ export function inputsColorizer (elem, langObjkey) {
     } else {
         elem.style.borderColor = '#ced4da';
         elem.setAttribute('placeholder', langObj[settings.lang][langObjkey]);
-        console.log(langObj[settings.lang][langObjkey]);
     }
 }

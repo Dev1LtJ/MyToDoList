@@ -113,6 +113,7 @@ submitTaskBtn.addEventListener('click', function addTask(event) {
 taskList.addEventListener('click', (event) => {
     if (!event.target.closest('.list-group-item')) return false;
     let taskId = event.target.closest('.list-group-item').id;
+    console.log(taskId);
     if (event.target.classList.contains('btn-success')) {
         completeTask(users[currentUserIndex].tasks, taskId);
         setToLocalStorage(users, 'users');
@@ -140,8 +141,6 @@ sortsBtns.addEventListener('click', (event) => {
     renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
 })
 
-closeBtn.addEventListener('click', offEditMode);
-closeCross.addEventListener('click', offEditMode);
 addTaskBtn.addEventListener('click', ()=> {
     offEditMode();
     for (let radio of radios) {
@@ -160,6 +159,7 @@ function editTaskMode(taskId) {
     submitTaskBtn.hidden = true;
     editTaskBtn.hidden = false;
     let taskPosition = users[currentUserIndex].tasks.findIndex((item) => item.id === taskId);
+    console.log(taskPosition);
     titleForm.value = users[currentUserIndex].tasks[taskPosition].title;
     textForm.value = users[currentUserIndex].tasks[taskPosition].text;
     for (let radio of radios) {

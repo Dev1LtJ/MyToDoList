@@ -23,8 +23,6 @@ export const langObj = {
         password: 'Пароль',
         inputPassword: 'Введите ваш пароль',
         enter: 'Войти в список задач',
-        emailChecker: 'Проверка правильности эл. почты',
-        passwordChecker: 'Проверка правильности пароля',
         signin: 'Войти',
         signup: 'Зарегистрироваться',
         emailErrMsg: 'Пользователь с таким адресом не найден',
@@ -37,7 +35,6 @@ export const langObj = {
         inputLogin: 'Введите ваш логин',
         repeatedPassword: 'Повторите пароль',
         inputRepeatedPassword: 'Повторите ваш пароль',
-        loginChecker: 'Проверка правильности логина',
         signUpToDo: 'Зарегистрироваться в списке задач',
         back: 'Назад',
         passwordCheckGood: 'Пароли совпадают',
@@ -45,6 +42,10 @@ export const langObj = {
         loginMatchErrMsg: 'Пользователь с таким логином уже зарегистрирован',
         emailMatchErrMsg: 'Пользователь с таким адресом уже зарегистрирован',
         emailIncErrMsg: 'Введен некорректный адрес',
+        emailGood: 'Вы можете использовать данный адрес',
+        loginGood: 'Вы можете использовать данный логин',
+        passwordIncorrect: 'Пароль должен содержать минимум 8 символов латинского алфавита, в т.ч. не менее 1 заглавной и прописной буквы, 1 цифры и 1 спецсимвола',
+        passwordCorrect: 'Вы можете использовать данный пароль'
     },
     EN: {
         priority: 'Priority',
@@ -70,8 +71,6 @@ export const langObj = {
         password: 'Password',
         inputPassword: 'Enter your password',
         enter: 'Enter ToDoList',
-        emailChecker: 'Email correct checker',
-        passwordChecker: 'Password correct checker',
         signin: 'Sign in',
         signup: 'Sign up',
         emailErrMsg: 'User with this email was not found',
@@ -85,12 +84,15 @@ export const langObj = {
         signUpToDo: 'Sign up ToDoList',
         repeatedPassword: 'Repeat password',
         inputRepeatedPassword: 'Repeat your password',
-        loginChecker: 'Login correct checker',
         back: 'Back',
         passwordCheckGood: 'Passwords match',
         passwordCheckErrMsg: 'Passwords do not match',
         loginMatchErrMsg: 'User with this login is already registered',
         emailMatchErrMsg: 'User with this email is already registered',
         emailIncErrMsg: 'Email entered is incorrect',
+        emailGood: 'You can use the email',
+        loginGood: 'You can use this login',
+        passwordIncorrect: 'The password must contain at least 8 characters, incl. at least 1 uppercase and lowercase letters of the Latin alphabet, 1 number and 1 special character',
+        passwordCorrect: 'You can use this password'
     }
 };
