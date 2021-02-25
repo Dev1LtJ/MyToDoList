@@ -16,7 +16,8 @@ let submitTaskBtn = document.querySelector('button[type="submit"]'),
     currentUser = {},
     currentUserIndex = 0,
     settings = {},
-    users = [];
+    users = [],
+    taskPosition = null;
 
 export {currentUser};
 
@@ -113,13 +114,11 @@ submitTaskBtn.addEventListener('click', function addTask(event) {
 taskList.addEventListener('click', (event) => {
     if (!event.target.closest('.list-group-item')) return false;
     let taskId = event.target.closest('.list-group-item').id;
-    console.log(taskId);
     if (event.target.classList.contains('btn-success')) {
         completeTask(users[currentUserIndex].tasks, taskId);
         setToLocalStorage(users, 'users');
         renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
     } else if (event.target.classList.contains('btn-info')) {
-        clearForm(titleForm, textForm, radios);
         editTaskMode(taskId);
     } else if (event.target.classList.contains('btn-danger')) {
         deleteTask(users[currentUserIndex].tasks, taskId);
@@ -158,24 +157,30 @@ function editTaskMode(taskId) {
     addTaskBtn.dispatchEvent(new Event ('click', {bubbles : true}));
     submitTaskBtn.hidden = true;
     editTaskBtn.hidden = false;
-    let taskPosition = users[currentUserIndex].tasks.findIndex((item) => item.id === taskId);
-    console.log(taskPosition);
+    taskPosition = users[currentUserIndex].tasks.findIndex((item) => item.id === taskId);
     titleForm.value = users[currentUserIndex].tasks[taskPosition].title;
     textForm.value = users[currentUserIndex].tasks[taskPosition].text;
     for (let radio of radios) {
         if (radio.value === users[currentUserIndex].tasks[taskPosition].priority) radio.checked = true;
     }
-    editTaskBtn.addEventListener('click', (event) => {
-        event.preventDefault();
-        users[currentUserIndex].tasks[taskPosition].title = titleForm.value;
-        users[currentUserIndex].tasks[taskPosition].text = textForm.value;
-        users[currentUserIndex].tasks[taskPosition].priority = checkPriority(radios);
-        users[currentUserIndex].tasks[taskPosition].color = getPriorityTheme(users[currentUserIndex].tasks[taskPosition].priority);
-        setToLocalStorage(users, 'users');
-        renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
-        closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
-    }, {once: true});
 }
+
+function editTask (taskPosition) {
+    if(!checkInputs (titleForm, textForm)) return false;
+    users[currentUserIndex].tasks[taskPosition].title = titleForm.value;
+    users[currentUserIndex].tasks[taskPosition].text = textForm.value;
+    users[currentUserIndex].tasks[taskPosition].priority = checkPriority(radios);
+    users[currentUserIndex].tasks[taskPosition].color = getPriorityTheme(users[currentUserIndex].tasks[taskPosition].priority);
+    setToLocalStorage(users, 'users');
+    renderDOM(taskList, unfinishedHeader, completedTaskList, finishedHeader, users[currentUserIndex].tasks, taskElem);
+    closeCross.dispatchEvent(new Event ('click', {bubbles : true}));
+    taskPosition = null;
+}
+
+editTaskBtn.addEventListener('click', (event) => {
+    event.preventDefault();
+    editTask (taskPosition);
+});
 
 titleForm.addEventListener('change', (event) => inputsColorizer (event.target, 'title'));
 textForm.addEventListener('change', (event) => inputsColorizer (event.target, 'text'));
